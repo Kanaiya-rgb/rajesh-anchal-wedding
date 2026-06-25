@@ -16,29 +16,22 @@ const WEBBING_PLAYLIST: Track[] = [
     name: "Vakratunda Mahakaya (Ganesh Shlok)",
     movie: "Auspicious Blessings Begin",
     artist: "Divine Sacred Chant",
-    url: "/music/Vakratunda Mahakaya - Ganpati Shlok_spotdown.org.mp3",
+    url: "/music/ganesh_shlok.mp3",
     type: 'audio'
   },
   {
     name: "Aaj Se Teri",
     movie: "Padman (Wedding Theme)",
     artist: "Arijit Singh & Amit Trivedi",
-    url: "/music/Amit Trivedi, Arijit Singh - Aaj Se Teri (SPOTISAVER).mp3",
+    url: "/music/aaj_se_teri.mp3",
     type: 'audio'
   },
   {
     name: "Rab Ne Milayi",
     movie: "Rab Ne Bana Di Jodi",
     artist: "Roop Kumar Rathod",
-    url: "/music/Devrath Sharma - Rab Ne Milayi Dhadkan (SPOTISAVER).mp3",
+    url: "/music/rab_ne_milayi.mp3",
     type: 'audio'
-  },
-  {
-    name: "Traditional Tanpura & Bell",
-    movie: "Live Wedding Drone Synthesis",
-    artist: "Ambient Sacred Aura",
-    url: "",
-    type: 'synthesized'
   }
 ];
 
