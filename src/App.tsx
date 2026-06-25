@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { motion } from 'motion/react';
+import { Analytics } from '@vercel/analytics/react';
 import PetalAnimation from './components/PetalAnimation';
 import GaneshaHeader from './components/GaneshaHeader';
 import Countdown from './components/Countdown';
@@ -257,7 +258,7 @@ export default function App() {
               ) : lang === 'en' ? (
                 'Designed with devotion, love, and tradition for our grand celebrations · 2027'
               ) : (
-                'श्रद्धा, प्रेम और सनातन परंपरा के साथ हमारे मांगलिक उत्सव हेतु सुसज्जित · 2027'
+                'श्रद्धा, प्रेम और सनातन परंपरा के साथ हम���रे मांगलिक उत्सव हे���ु सुसज्जित · 2027'
               )}
             </p>
             <div className="w-16 h-0.5 bg-royal-gold/30 mx-auto mt-4" />
@@ -275,6 +276,7 @@ export default function App() {
 
         </div>
       </div>
+      <Analytics />
     </>
   );
 }
