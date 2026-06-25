@@ -1,0 +1,6 @@
+{
+  "name": "Rajesh & Anchal Wedding Invitation",
+  "description": "An elegant, traditional, and colorful Indian wedding invitation, live petal animation, interactive RSVP planner, and blessings guestbook.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

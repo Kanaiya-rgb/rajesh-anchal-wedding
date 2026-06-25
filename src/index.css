@@ -1,0 +1,90 @@
+@import url('https://fonts.googleapis.com/css2?family=Alex+Brush&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Marcellus&family=Yatra+One&family=Inter:wght@300;400;500;600&display=swap');
+@import "tailwindcss";
+
+@theme {
+  --font-serif: 'Cormorant Garamond', Georgia, serif;
+  --font-display: 'Marcellus', serif;
+  --font-script: 'Alex Brush', cursive;
+  --font-devanagari: 'Yatra One', serif;
+  --font-sans: 'Inter', system-ui, sans-serif;
+
+  --color-royal-gold: #D4AF37;
+  --color-bright-gold: #FFDF00;
+  --color-deep-gold: #AA7C11;
+  --color-wedding-red: #8B0000;
+  --color-wedding-crimson: #9E1B32;
+  --color-wedding-maroon: #5C0612;
+  --color-saffron: #FF9933;
+  --color-marigold-orange: #FF5E00;
+  --color-marigold-yellow: #FFC000;
+  --color-temple-cream: #FCF8F2;
+  --color-henna-green: #2E5A27;
+
+  @keyframes pulse-ring {
+    0% { transform: scale(0.95); opacity: 0.5; }
+    50% { transform: scale(1.05); opacity: 0.8; }
+    100% { transform: scale(0.95); opacity: 0.5; }
+  }
+
+  @keyframes float {
+    0% { transform: translateY(0px) rotate(0deg); }
+    50% { transform: translateY(-10px) rotate(3deg); }
+    100% { transform: translateY(0px) rotate(0deg); }
+  }
+
+  @keyframes slow-spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+  }
+
+  @keyframes sparkle {
+    0%, 100% { opacity: 0.3; transform: scale(0.8); }
+    50% { opacity: 1; transform: scale(1.2); }
+  }
+}
+
+.font-wedding-serif {
+  font-family: var(--font-serif);
+}
+
+.font-wedding-display {
+  font-family: var(--font-display);
+}
+
+.font-wedding-script {
+  font-family: var(--font-script);
+}
+
+.font-wedding-devanagari {
+  font-family: var(--font-devanagari);
+}
+
+/* Custom scrollbars for a royal feel */
+::-webkit-scrollbar {
+  width: 8px;
+}
+::-webkit-scrollbar-track {
+  background: #FCF8F2;
+}
+::-webkit-scrollbar-thumb {
+  background: #9E1B32;
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #5C0612;
+}
+
+/* Royal Arch pattern background */
+.royal-bg {
+  background-color: #FCF8F2;
+  background-image: radial-gradient(circle at 100% 150%, #FCF8F2 24%, #F5EFEB 24%, #F5EFEB 28%, #FCF8F2 28%, #FCF8F2 36%, #F5EFEB 36%, #F5EFEB 40%, transparent 40%, transparent),
+                    radial-gradient(circle at 0% 150%, #FCF8F2 24%, #F5EFEB 24%, #F5EFEB 28%, #FCF8F2 28%, #FCF8F2 36%, #F5EFEB 36%, #F5EFEB 40%, transparent 40%, transparent),
+                    radial-gradient(circle at 50% 100%, #F5EFEB 10%, #FCF8F2 10%, #FCF8F2 23%, #F5EFEB 23%, #F5EFEB 30%, #FCF8F2 30%, #FCF8F2 43%, #F5EFEB 43%, #F5EFEB 50%, transparent 50%, transparent);
+  background-size: 100px 50px;
+}
+
+/* Shubh Vivah Traditional Mandala Board border */
+.mandala-border {
+  border: 12px double #D4AF37;
+  box-shadow: 0 0 15px rgba(212, 175, 55, 0.4), inset 0 0 15px rgba(212, 175, 55, 0.4);
+}
