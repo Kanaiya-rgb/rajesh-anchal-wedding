@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { motion } from 'motion/react';
-import { Check, Loader, User, PhoneCall, Users, Heart, Sparkles, ChevronDown, ChevronUp, Copy, CheckCheck, Settings } from 'lucide-react';
+import { Check, Loader, User, PhoneCall, Users, Heart, Sparkles } from 'lucide-react';
 import { RSVP } from '../types';
 import { submitRsvpToSheets } from '../googleSheets';
 
@@ -39,8 +39,6 @@ export default function RsvpForm({ lang = 'hi' }: RsvpFormProps) {
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [showGuide, setShowGuide] = useState(false);
-  const [copied, setCopied] = useState(false);
 
   const ceremonyOptions = lang === 'en' ? ceremonyOptionsEn : lang === 'mix' ? ceremonyOptionsMix : ceremonyOptionsHi;
 
@@ -280,7 +278,7 @@ export default function RsvpForm({ lang = 'hi' }: RsvpFormProps) {
             </div>
 
             {/* Special Message */}
-            <div>
+            <div className="mt-4">
               <label className="block text-xs font-bold text-wedding-maroon uppercase tracking-wider mb-1.5">
                 {lang === 'en' ? 'Blessing / Dietary Notes' : lang === 'mix' ? 'दंपत्ति को शुभकामनाएं / विशिष्ट निर्देश (Blessings / Notes)' : 'दंपत्ति को शुभकामनाएं / विशिष्ट निर्देश'}
               </label>
@@ -289,7 +287,7 @@ export default function RsvpForm({ lang = 'hi' }: RsvpFormProps) {
                 placeholder={lang === 'en' ? 'Write a loving note for the couple...' : lang === 'mix' ? 'नव-दंपत्ति के लिए संदेश लिखें... (Write a loving note...)' : 'नव-दंपत्ति के लिए अपना स्नेहपूर्ण संदेश लिखें...'}
                 value={formData.specialMessage}
                 onChange={(e) => setFormData({ ...formData, specialMessage: e.target.value })}
-                className="w-full px-4 py-2 rounded-xl border border-gray-200 focus:border-royal-gold focus:ring-2 focus:ring-royal-gold/20 outline-none text-xs md:text-sm transition-all duration-200"
+                className="w-full px-4 py-2.5 rounded-xl border border-gray-200 focus:border-royal-gold focus:ring-2 focus:ring-royal-gold/20 outline-none text-xs md:text-sm transition-all duration-200"
               />
             </div>
 
@@ -297,7 +295,7 @@ export default function RsvpForm({ lang = 'hi' }: RsvpFormProps) {
             <button
               type="submit"
               disabled={loading}
-              className="w-full bg-gradient-to-r from-wedding-crimson to-wedding-maroon hover:from-wedding-maroon hover:to-wedding-maroon text-white py-3 rounded-full text-xs md:text-sm font-bold uppercase tracking-wider transition-all duration-200 border border-royal-gold shadow-lg flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50"
+              className="w-full mt-6 bg-gradient-to-r from-wedding-crimson to-wedding-maroon hover:from-wedding-maroon hover:to-wedding-maroon text-white py-3 rounded-full text-xs md:text-sm font-bold uppercase tracking-wider transition-all duration-200 border border-royal-gold shadow-lg flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50"
             >
               {loading ? (
                 <>
@@ -309,177 +307,6 @@ export default function RsvpForm({ lang = 'hi' }: RsvpFormProps) {
               )}
             </button>
           </form>
-        )}
-
-        {/* OWNER GOOGLE SHEETS SETUP GUIDE */}
-        {!import.meta.env.VITE_APPS_SCRIPT_URL && (
-          <div className="mt-6 pt-5 border-t border-dashed border-royal-gold/30">
-            <button
-              type="button"
-              onClick={() => setShowGuide(!showGuide)}
-              className="w-full py-2 px-3.5 bg-royal-gold/10 hover:bg-royal-gold/20 text-wedding-maroon border border-royal-gold rounded-xl text-xs font-bold transition-all flex items-center justify-between cursor-pointer"
-            >
-              <span className="flex items-center gap-1.5 font-wedding-devanagari">
-                <Settings className="w-4 h-4 animate-slow-spin text-marigold-orange" />
-                <span>🛠️ Google Sheet से RSVP लिंक करने की गाइड (Owner Guide)</span>
-              </span>
-              {showGuide ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
-            </button>
-
-            {showGuide && (
-              <motion.div
-                initial={{ opacity: 0, height: 0 }}
-                animate={{ opacity: 1, height: 'auto' }}
-                className="mt-3.5 bg-amber-50/50 border border-royal-gold/20 rounded-xl p-4 text-[11px] leading-relaxed text-gray-700 font-wedding-serif text-left space-y-3"
-              >
-                <p className="font-semibold text-wedding-crimson font-wedding-devanagari text-[12px] border-b border-royal-gold/10 pb-1 flex items-center gap-1">
-                  📢 RSVP और शुभकामनाओं का डेटा सीधे आपकी गूगल शीट में स्टोर करने के लिए यह सेटअप करें:
-                </p>
-
-                <ol className="list-decimal list-inside space-y-2 text-[11px]">
-                  <li>
-                    अपनी गूगल शीट खोलें: 
-                    <a 
-                      href="https://docs.google.com/spreadsheets/d/14nWPvAKtDAHgScXiRxnypHLqNRFcRgIj_kHN6No-Tis/edit" 
-                      target="_blank" 
-                      rel="noopener noreferrer" 
-                      className="text-blue-600 underline font-bold ml-1"
-                    >
-                      शीट लिंक
-                    </a>
-                  </li>
-                  <li>ऊपर मेनू में <b>Extensions (एक्सटेंशन)</b> &gt; <b>Apps Script (ऐप्स स्क्रिप्ट)</b> पर क्लिक करें।</li>
-                  <li>वहाँ पहले से मौजूद सारे कोड को हटाकर, नीचे दिया गया कोड पेस्ट करें:</li>
-                </ol>
-
-                {/* Code Block with Copy Button */}
-                <div className="relative bg-neutral-900 rounded-lg p-3 text-left overflow-x-auto text-[10px] font-mono text-amber-200/90 leading-normal max-h-52">
-                  <button
-                    type="button"
-                    onClick={() => {
-                      navigator.clipboard.writeText(`function doPost(e) {
-  try {
-    var data = JSON.parse(e.postData.contents);
-    var action = data.action;
-    var ss = SpreadsheetApp.getActiveSpreadsheet();
-    
-    if (action === "rsvp") {
-      var sheet = ss.getSheetByName("RSVP") || ss.insertSheet("RSVP");
-      if (sheet.getLastRow() === 0) {
-        sheet.appendRow(["Submitted At", "Full Name", "Contact/Phone/Email", "Attending Events", "Guests Count", "Food Preference", "Special Message"]);
-        sheet.getRange(1, 1, 1, 7).setFontWeight("bold").setBackground("#f4ebe1").setFontColor("#800020");
-      }
-      sheet.appendRow([
-        data.submittedAt,
-        data.fullName,
-        data.phoneOrEmail,
-        data.attendingEvents,
-        data.guestsCount,
-        data.foodPreference,
-        data.specialMessage
-      ]);
-    } else if (action === "blessing") {
-      var sheet = ss.getSheetByName("Blessings") || ss.insertSheet("Blessings");
-      if (sheet.getLastRow() === 0) {
-        sheet.appendRow(["Submitted At", "Sender Name", "Relation", "Blessing Message", "Card Style"]);
-        sheet.getRange(1, 1, 1, 5).setFontWeight("bold").setBackground("#f4ebe1").setFontColor("#800020");
-      }
-      sheet.appendRow([
-        data.submittedAt,
-        data.senderName,
-        data.relation,
-        data.message,
-        data.cardStyle
-      ]);
-    }
-    
-    return ContentService.createTextOutput(JSON.stringify({ status: "success" }))
-      .setMimeType(ContentService.MimeType.JSON);
-  } catch (error) {
-    return ContentService.createTextOutput(JSON.stringify({ status: "error", message: error.toString() }))
-      .setMimeType(ContentService.MimeType.JSON);
-  }
-}
-
-function doGet(e) {
-  return ContentService.createTextOutput("Rajesh & Anchal Wedding RSVP & Blessings Sheet Sync is active! Use POST to submit data.");
-}`);
-                      setCopied(true);
-                      setTimeout(() => setCopied(false), 2000);
-                    }}
-                    className="absolute top-2 right-2 p-1.5 bg-neutral-800 hover:bg-neutral-700 text-white border border-neutral-700 rounded-md transition-all flex items-center gap-1 cursor-pointer"
-                  >
-                    {copied ? <CheckCheck className="w-3.5 h-3.5 text-green-400" /> : <Copy className="w-3.5 h-3.5" />}
-                    <span>{copied ? "Copied!" : "Copy Code"}</span>
-                  </button>
-                  <pre className="pr-16">{`function doPost(e) {
-  try {
-    var data = JSON.parse(e.postData.contents);
-    var action = data.action;
-    var ss = SpreadsheetApp.getActiveSpreadsheet();
-    
-    if (action === "rsvp") {
-      var sheet = ss.getSheetByName("RSVP") || ss.insertSheet("RSVP");
-      if (sheet.getLastRow() === 0) {
-        sheet.appendRow(["Submitted At", "Full Name", "Contact/Phone/Email", "Attending Events", "Guests Count", "Food Preference", "Special Message"]);
-        sheet.getRange(1, 1, 1, 7).setFontWeight("bold").setBackground("#f4ebe1").setFontColor("#800020");
-      }
-      sheet.appendRow([
-        data.submittedAt,
-        data.fullName,
-        data.phoneOrEmail,
-        data.attendingEvents,
-        data.guestsCount,
-        data.foodPreference,
-        data.specialMessage
-      ]);
-    } else if (action === "blessing") {
-      var sheet = ss.getSheetByName("Blessings") || ss.insertSheet("Blessings");
-      if (sheet.getLastRow() === 0) {
-        sheet.appendRow(["Submitted At", "Sender Name", "Relation", "Blessing Message", "Card Style"]);
-        sheet.getRange(1, 1, 1, 5).setFontWeight("bold").setBackground("#f4ebe1").setFontColor("#800020");
-      }
-      sheet.appendRow([
-        data.submittedAt,
-        data.senderName,
-        data.relation,
-        data.message,
-        data.cardStyle
-      ]);
-    }
-    
-    return ContentService.createTextOutput(JSON.stringify({ status: "success" }))
-      .setMimeType(ContentService.MimeType.JSON);
-  } catch (error) {
-    return ContentService.createTextOutput(JSON.stringify({ status: "error", message: error.toString() }))
-      .setMimeType(ContentService.MimeType.JSON);
-  }
-}
-
-function doGet(e) {
-  return ContentService.createTextOutput("Rajesh & Anchal Wedding RSVP & Blessings Sheet Sync is active! Use POST to submit data.");
-}`}</pre>
-                </div>
-
-                <ol className="list-decimal list-inside space-y-2 text-[11px]" start={4}>
-                  <li>ऊपर सेव (Save icon) पर क्लिक करें, फिर <b>Deploy &gt; New Deployment</b> पर क्लिक करें।</li>
-                  <li>गियर आइकॉन पर क्लिक करके प्रकार <b>Web App</b> चुनें।</li>
-                  <li>विवरण में "Wedding RSVP" लिखें। और नीचे ये सेटिंग्स रखें:
-                    <ul className="list-disc list-inside ml-4 mt-1 text-gray-600 space-y-0.5 text-[10.5px]">
-                      <li><b>Execute as:</b> Me (your-email)</li>
-                      <li><b>Who has access:</b> <span className="text-red-600 font-bold">Anyone</span> (यह बहुत जरूरी है!)</li>
-                    </ul>
-                  </li>
-                  <li><b>Deploy</b> बटन पर क्लिक करें। अगर ऑथराइजेशन माँगे, तो अपने गूगल अकाउंट को अनुमति दें (Advanced &gt; Go to Wedding RSVP &gt; Allow)।</li>
-                  <li>अंत में आपको एक <b>URL</b> मिलेगा (जैसे: <code className="bg-amber-100 px-1 py-0.5 rounded font-mono">https://script.google.com/macros/s/.../exec</code>)। उसे कॉपी करें।</li>
-                  <li>गूगल एआई स्टूडियो (AI Studio Build) के <b>Settings (गियर आइकॉन)</b> पर क्लिक करके वहाँ <b>Environment Variables</b> में <code className="bg-amber-100 px-1 rounded font-semibold text-wedding-crimson">VITE_APPS_SCRIPT_URL</code> की वैल्यू में यह यूआरएल पेस्ट कर दें!</li>
-                </ol>
-                <div className="bg-[#7A1221]/10 p-2.5 rounded-lg border border-[#7A1221]/20 font-wedding-devanagari text-[11.5px] text-wedding-maroon text-center font-semibold">
-                  🎉 बस इतना ही! इसके बाद आपके सभी मेहमानों के RSVP और बधाइयाँ आपकी गूगल शीट में रियल-टाइम में जुड़ती जाएँगी।
-                </div>
-              </motion.div>
-            )}
-          </div>
         )}
       </motion.div>
     </div>
