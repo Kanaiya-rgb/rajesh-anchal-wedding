@@ -110,9 +110,9 @@ export async function submitRsvpToSheets(rsvp: RSVP): Promise<boolean> {
   try {
     await fetch(APPS_SCRIPT_URL, {
       method: "POST",
-      mode: "no-cors", // Essential for simple cross-origin browser submits
+      mode: "no-cors", // Use no-cors mode to bypass browser CORS preflight & redirect blocks
       headers: {
-        "Content-Type": "application/json",
+        "Content-Type": "text/plain", // Keep as text/plain to avoid CORS preflight triggers
       },
       body: JSON.stringify({
         action: "rsvp",
@@ -125,9 +125,10 @@ export async function submitRsvpToSheets(rsvp: RSVP): Promise<boolean> {
         submittedAt: rsvp.submittedAt.toISOString(),
       }),
     });
-    // Mode no-cors won't let us read the status, so we assume success if no exception is thrown
-    saveRsvpLocally(rsvp); // Also backup locally
-    return true;
+    
+    // Save to local storage backup for instantaneous feedback & offline reliability
+    saveRsvpLocally(rsvp);
+    return true; // Return true as fetch successfully dispatched and no exception was thrown
   } catch (err) {
     console.error("CORS or network error submitting RSVP, saved locally:", err);
     saveRsvpLocally(rsvp);
@@ -158,9 +159,9 @@ export async function submitBlessingToSheets(blessing: Omit<BlessingMessage, "id
   try {
     await fetch(APPS_SCRIPT_URL, {
       method: "POST",
-      mode: "no-cors",
+      mode: "no-cors", // Use no-cors mode to follow redirects cleanly without CORS blocking
       headers: {
-        "Content-Type": "application/json",
+        "Content-Type": "text/plain", // Keep as text/plain to avoid CORS preflight triggers
       },
       body: JSON.stringify({
         action: "blessing",
@@ -171,7 +172,7 @@ export async function submitBlessingToSheets(blessing: Omit<BlessingMessage, "id
         submittedAt: submittedAt.toISOString(),
       }),
     });
-    return true;
+    return true; // Return true as fetch successfully dispatched and no exception was thrown
   } catch (err) {
     console.error("CORS or network error submitting Blessing, saved locally:", err);
     return true;

@@ -9,13 +9,11 @@ import RsvpForm from './components/RsvpForm';
 import Guestbook from './components/Guestbook';
 import MusicPlayer from './components/MusicPlayer';
 import WelcomeOverlay from './components/WelcomeOverlay';
-import DigitalInvitationCard from './components/DigitalInvitationCard';
 import { Sparkles, Heart, Flower, Languages } from 'lucide-react';
 
 export default function App() {
   const [hasEntered, setHasEntered] = useState(false);
   const [lang, setLang] = useState<'en' | 'hi' | 'mix'>('mix');
-  const [isCardModalOpen, setIsCardModalOpen] = useState(false);
 
   const triggerShubhBurst = () => {
     // Fire the custom physical confetti event
@@ -63,7 +61,7 @@ export default function App() {
           ))}
         </div>
 
-        {/* FLOATING CONTROLS BAR (Language Toggle + Digital Card + Music Player stacked) */}
+        {/* FLOATING CONTROLS BAR (Language Toggle + Music Player stacked) */}
         <div className="fixed top-6 right-4 z-50 flex flex-col gap-3 items-end">
           {/* Stunning Royal Language Toggle Button */}
           <motion.button
@@ -77,21 +75,6 @@ export default function App() {
             <Languages className="w-4 h-4 text-bright-gold animate-pulse shrink-0" />
             <span className="font-wedding-devanagari text-[10px] md:text-xs">
               {lang === 'mix' ? 'दोनों Mix' : lang === 'en' ? 'English' : 'हिन्दी'}
-            </span>
-          </motion.button>
-
-          {/* Golden Digital Card Floating Button */}
-          <motion.button
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-            onClick={() => setIsCardModalOpen(true)}
-            className="flex items-center gap-2 px-3.5 py-2 bg-gradient-to-r from-saffron to-marigold-orange text-white border-2 border-royal-gold rounded-full shadow-xl cursor-pointer text-xs font-bold tracking-wider relative group overflow-hidden"
-            id="floating-card-btn"
-          >
-            <span className="absolute inset-0 bg-white/10 scale-0 group-hover:scale-100 transition-transform duration-300 rounded-full" />
-            <Sparkles className="w-4 h-4 text-bright-gold animate-pulse shrink-0" />
-            <span className="font-wedding-devanagari text-[10px] md:text-xs">
-              {lang === 'mix' ? 'आमंत्रण पत्र / Card' : lang === 'en' ? 'Digital Card' : 'निमंत्रण पत्र'}
             </span>
           </motion.button>
 
@@ -153,68 +136,6 @@ export default function App() {
           {/* 2. LORD GANESHA AUSPICIOUS SECTION */}
           <section className="mb-12 bg-white/40 backdrop-blur-sm rounded-3xl border border-royal-gold/15 shadow-sm overflow-hidden">
             <GaneshaHeader lang={lang} />
-          </section>
-
-          {/* DIGITAL INVITATION CARD GENERATOR BANNER */}
-          <section className="mb-12 text-center px-2">
-            <motion.div
-              initial={{ opacity: 0, y: 15 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              className="bg-gradient-to-br from-[#7A1221] to-[#4A0710] border-2 border-royal-gold rounded-3xl p-6 shadow-xl max-w-xl mx-auto relative overflow-hidden group hover:border-bright-gold transition-all duration-300 select-none"
-            >
-              {/* Inner hairlines */}
-              <div className="absolute inset-1.5 border border-royal-gold/20 rounded-[22px] pointer-events-none" />
-              <div className="absolute inset-2 border border-royal-gold/10 rounded-[18px] pointer-events-none" />
-              
-              <div className="absolute -left-6 -top-6 opacity-10 pointer-events-none text-bright-gold w-24 h-24">
-                <Flower className="w-full h-full animate-slow-spin" />
-              </div>
-              <div className="absolute -right-6 -bottom-6 opacity-10 pointer-events-none text-bright-gold w-24 h-24">
-                <Flower className="w-full h-full animate-slow-spin" />
-              </div>
-
-              <span className="text-bright-gold font-wedding-devanagari text-xs uppercase tracking-wider block mb-1.5 font-bold">
-                ॥ डिजिटल आमंत्रण पत्र / DIGITAL INVITATION CARD ॥
-              </span>
-              <h3 className="text-white font-wedding-display text-lg md:text-xl font-extrabold mb-2.5">
-                {lang === 'mix' 
-                  ? 'अपना कस्टमाइज्ड विवाह निमंत्रण पत्र डाउनलोड करें' 
-                  : lang === 'en' 
-                    ? 'Download Your Customized Invitation Card' 
-                    : 'अपना कस्टमाइज्ड विवाह निमंत्रण पत्र डाउनलोड करें'
-                }
-                {lang === 'mix' && (
-                  <span className="block text-xs font-wedding-serif text-white/70 font-medium mt-0.5">(Get Your Elegant Digital Invite)</span>
-                )}
-              </h3>
-              <div className="text-white/80 font-wedding-serif text-xs md:text-sm mb-5 leading-relaxed max-w-md mx-auto px-1">
-                {lang === 'mix' ? (
-                  <p className="font-wedding-devanagari font-semibold text-[#FDF9F3] text-[13px]">वर-वधू के शुभ विवाह का एक अति सुंदर एवं पारंपरिक निमंत्रण पत्र विभिन्न कलर थीम्स और भाषाओं में जनरेट करें और सीधे अपने फोन में डाउनलोड करें।</p>
-                ) : lang === 'en' ? (
-                  <p>Generate and download a stunning, traditional digital wedding invitation card for Rajesh &amp; Anchal with customizable royal themes and languages.</p>
-                ) : (
-                  <p>वर-वधू के शुभ विवाह का एक अति सुंदर एवं पारंपरिक निमंत्रण पत्र विभिन्न कलर थीम्स और भाषाओं में जनरेट करें और सीधे अपने फोन में डाउनलोड करें।</p>
-                )}
-              </div>
-
-              <button
-                onClick={() => setIsCardModalOpen(true)}
-                className="relative px-6 py-3 bg-gradient-to-r from-saffron to-marigold-orange hover:from-marigold-orange hover:to-saffron text-white font-bold font-wedding-display text-xs md:text-sm uppercase tracking-widest rounded-full border-2 border-royal-gold shadow-lg hover:scale-105 active:scale-95 transition-all duration-200 cursor-pointer overflow-hidden group flex items-center justify-center gap-2.5 mx-auto"
-                id="open-card-generator-btn"
-              >
-                <Sparkles className="w-4 h-4 text-bright-gold animate-pulse" />
-                <span>
-                  {lang === 'mix' 
-                    ? 'आमंत्रण पत्र जनरेट करें' 
-                    : lang === 'en' 
-                      ? 'Get Digital Invitation Card' 
-                      : 'आमंत्रण पत्र जनरेट करें'
-                  }
-                </span>
-                <Sparkles className="w-4 h-4 text-bright-gold animate-pulse" />
-              </button>
-            </motion.div>
           </section>
 
           {/* INTERACTIVE SHUBH SHOWER BLOCKS PANEL */}
@@ -351,16 +272,6 @@ export default function App() {
               </p>
             </div>
           </footer>
-
-          {/* AnimatePresence Digital Card Modal Overlay */}
-          <AnimatePresence>
-            {isCardModalOpen && (
-              <DigitalInvitationCard 
-                lang={lang} 
-                onClose={() => setIsCardModalOpen(false)} 
-              />
-            )}
-          </AnimatePresence>
 
         </div>
       </div>
