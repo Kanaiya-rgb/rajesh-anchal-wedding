@@ -32,6 +32,13 @@ const WEBBING_PLAYLIST: Track[] = [
     artist: "Roop Kumar Rathod",
     url: "/music/rab_ne_milayi.mp3",
     type: 'audio'
+  },
+  {
+    name: "Traditional Tanpura & Bell",
+    movie: "Live Wedding Drone Synthesis",
+    artist: "Ambient Sacred Aura",
+    url: "",
+    type: 'synthesized'
   }
 ];
 
@@ -155,7 +162,7 @@ export default function MusicPlayer() {
   // Audio tag control
   useEffect(() => {
     // If we are already playing audio from the direct window play trigger, we don't want to re-instantiate it here if it's already active and matches the URL
-    if (audioRef.current && isPlaying && currentTrack.type === 'audio' && audioRef.current.src === currentTrack.url) {
+    if (audioRef.current && isPlaying && currentTrack.type === 'audio' && audioRef.current.src.endsWith(currentTrack.url)) {
       return;
     }
 
