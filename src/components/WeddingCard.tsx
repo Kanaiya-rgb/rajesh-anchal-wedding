@@ -161,13 +161,13 @@ export default function WeddingCard({ lang = 'mix' }: WeddingCardProps) {
               <div className="text-xs text-gray-500 font-wedding-serif leading-relaxed px-1">
                 {lang === 'mix' ? (
                   <span className="block space-y-1 text-center">
-                    <span className="block font-wedding-devanagari text-wedding-maroon font-bold text-xs leading-normal">एम.एससी (ऑर्गेनिक केमिस्ट्री), क्वालिटी कंट्रोल विभाग में ऑफिसर (Troikaa Pharmaceuticals)। श्री हनुमान सोनी एवं श्रीमती गीता सोनी के सुपुत्र।</span>
-                    <span className="block text-[10px] text-gray-400 font-medium leading-normal">M.Sc. Organic Chemistry, Quality Control Officer at Troikaa Pharmaceuticals, Dahej. Loving son of Mr. Hanuman &amp; Mrs. Geeta Soni.</span>
+                    <span className="block font-wedding-devanagari text-wedding-maroon font-bold text-xs leading-normal">एम.एससी (ऑर्गेनिक केमिस्ट्री)। श्री हनुमान सोनी एवं श्रीमती गीता सोनी के सुपुत्र।</span>
+                    <span className="block text-[10px] text-gray-400 font-medium leading-normal">M.Sc. Organic Chemistry. Loving son of Mr. Hanuman &amp; Mrs. Geeta Soni.</span>
                   </span>
                 ) : lang === 'en' ? (
-                  <p>"M.Sc. Organic Chemistry, Quality Control Officer at Troikaa Pharmaceuticals, Dahej. Loving son of Mr. Hanuman & Mrs. Geeta Soni."</p>
+                  <p>"M.Sc. Organic Chemistry. Loving son of Mr. Hanuman & Mrs. Geeta Soni."</p>
                 ) : (
-                  <p>"एम.एससी (ऑर्गेनिक केमिस्ट्री), क्वालिटी कंट्रोल विभाग में ऑफिसर (Troikaa Pharmaceuticals). श्री हनुमान सोनी एवं श्रीमती गीता सोनी के सुपुत्र।"</p>
+                  <p>"एम.एससी (ऑर्गेनिक केमिस्ट्री)। श्री हनुमान सोनी एवं श्रीमती गीता सोनी के सुपुत्र।"</p>
                 )}
               </div>
             </div>
@@ -243,13 +243,13 @@ export default function WeddingCard({ lang = 'mix' }: WeddingCardProps) {
               <div className="text-xs text-gray-500 font-wedding-serif leading-relaxed px-1">
                 {lang === 'mix' ? (
                   <span className="block space-y-1 text-center">
-                    <span className="block font-wedding-devanagari text-wedding-maroon font-bold text-xs leading-normal">बी.एससी (ZCB), बी.एड (प्रथम वर्ष - प्रगति पर)। सुशील एवं गुणवान सुपुत्री श्री मुन्ना सोनी एवं श्रीमती संगीता सोनी। जन्म स्थान - समदर खुर्द, गोरखपुर।</span>
-                    <span className="block text-[10px] text-gray-400 font-medium leading-normal">B.Sc. (ZCB), B.Ed (1st year, running). Talented and graceful daughter of Mr. Munna &amp; Mrs. Sangeeta Soni. Born in Samdar Khurd, Gorakhpur.</span>
+                    <span className="block font-wedding-devanagari text-wedding-maroon font-bold text-xs leading-normal">बी.एससी (ZCB)। सुशील एवं गुणवान सुपुत्री श्री मुन्ना सोनी एवं श्रीमती संगीता सोनी।</span>
+                    <span className="block text-[10px] text-gray-400 font-medium leading-normal">B.Sc. (ZCB). Talented and graceful daughter of Mr. Munna &amp; Mrs. Sangeeta Soni.</span>
                   </span>
                 ) : lang === 'en' ? (
-                  <p>"B.Sc. (ZCB), B.Ed (1st year). Talented, graceful daughter of Mr. Munna & Mrs. Sangeeta Soni. Born in Samdar Khurd, Gorakhpur."</p>
+                  <p>"B.Sc. (ZCB). Talented, graceful daughter of Mr. Munna & Mrs. Sangeeta Soni."</p>
                 ) : (
-                  <p>"बी.एससी (ZCB), बी.एड (प्रथम वर्ष)। सुशील एवं गुणवान सुपुत्री श्री मुन्ना सोनी एवं श्रीमती संगीता सोनी।"</p>
+                  <p>"बी.एससी (ZCB)। सुशील एवं गुणवान सुपुत्री श्री मुन्ना सोनी एवं श्रीमती संगीता सोनी।"</p>
                 )}
               </div>
             </div>
@@ -311,13 +311,9 @@ export default function WeddingCard({ lang = 'mix' }: WeddingCardProps) {
                       <div className="col-span-1 sm:col-span-4 text-gray-400 font-medium flex items-center gap-1.5"><ShieldCheck className="w-3.5 h-3.5 text-saffron shrink-0" /> {lang === 'en' ? 'Gotra / Religion' : lang === 'mix' ? 'गोत्र (Gotra)' : 'गोत्र / धर्म'}</div>
                       <div className="col-span-1 sm:col-span-8 text-wedding-maroon font-semibold">Kashyap · Hindu (कश्यप · हिन्दू)</div>
                     </div>
-                    <div className="grid grid-cols-1 sm:grid-cols-12 border-b border-gray-100 pb-2 gap-1">
+                    <div className="grid grid-cols-1 sm:grid-cols-12 gap-1">
                       <div className="col-span-1 sm:col-span-4 text-gray-400 font-medium flex items-center gap-1.5"><Heart className="w-3.5 h-3.5 text-saffron shrink-0" /> {lang === 'en' ? 'Height' : lang === 'mix' ? 'लंबाई (Height)' : 'लंबाई'}</div>
                       <div className="col-span-1 sm:col-span-8 text-wedding-maroon font-semibold">5 Feet 9 Inches (5'9")</div>
-                    </div>
-                    <div className="grid grid-cols-1 sm:grid-cols-12 gap-1">
-                      <div className="col-span-1 sm:col-span-4 text-gray-400 font-medium flex items-center gap-1.5"><MapPin className="w-3.5 h-3.5 text-saffron shrink-0" /> {lang === 'en' ? 'Birth Place' : lang === 'mix' ? 'जन्म स्थान (Birthplace)' : 'जन्म स्थान'}</div>
-                      <div className="col-span-1 sm:col-span-8 text-wedding-maroon font-semibold">Mithabel, Chauri Chaura, Gorakhpur, UP</div>
                     </div>
                   </div>
 
@@ -326,19 +322,11 @@ export default function WeddingCard({ lang = 'mix' }: WeddingCardProps) {
                     <h6 className="font-bold text-saffron flex items-center gap-1.5 mb-1 text-xs uppercase tracking-wide">
                       <BookOpen className="w-4 h-4" /> {lang === 'en' ? 'Education & Profession' : lang === 'mix' ? 'शिक्षा एवं व्यवसाय (Education & Career)' : 'शिक्षा एवं व्यवसाय'}
                     </h6>
-                    <div className="grid grid-cols-1 sm:grid-cols-12 border-b border-gray-100 pb-2 gap-1">
+                    <div className="grid grid-cols-1 sm:grid-cols-12 gap-1">
                       <div className="col-span-1 sm:col-span-4 text-gray-400 font-medium">{lang === 'en' ? 'Education' : lang === 'mix' ? 'योग्यता (Education)' : 'योग्यता'}</div>
                       <div className="col-span-1 sm:col-span-8 text-wedding-maroon font-semibold">
                         M.Sc. Organic Chemistry (2022) · B.Sc. Chemistry (2020)
                       </div>
-                    </div>
-                    <div className="grid grid-cols-1 sm:grid-cols-12 border-b border-gray-100 pb-2 gap-1">
-                      <div className="col-span-1 sm:col-span-4 text-gray-400 font-medium">{lang === 'en' ? 'Current Role' : lang === 'mix' ? 'कार्यरत (Role)' : 'कार्यरत'}</div>
-                      <div className="col-span-1 sm:col-span-8 text-wedding-maroon font-semibold">Officer – Quality Control Department</div>
-                    </div>
-                    <div className="grid grid-cols-1 sm:grid-cols-12 gap-1">
-                      <div className="col-span-1 sm:col-span-4 text-gray-400 font-medium">{lang === 'en' ? 'Employer' : lang === 'mix' ? 'कंपनी (Employer)' : 'कंपनी'}</div>
-                      <div className="col-span-1 sm:col-span-8 text-wedding-maroon font-semibold">Troikaa Pharmaceuticals Ltd., Dahej (Gujarat)</div>
                     </div>
                   </div>
 
@@ -392,13 +380,9 @@ export default function WeddingCard({ lang = 'mix' }: WeddingCardProps) {
                       <div className="col-span-1 sm:col-span-4 text-gray-400 font-medium flex items-center gap-1.5"><ShieldCheck className="w-3.5 h-3.5 text-saffron shrink-0" /> {lang === 'en' ? 'Gotra / Religion' : lang === 'mix' ? 'गोत्र (Gotra)' : 'गोत्र / धर्म'}</div>
                       <div className="col-span-1 sm:col-span-8 text-wedding-maroon font-semibold">Badagariya · Hindu (बड़गरिया · हिन्दू)</div>
                     </div>
-                    <div className="grid grid-cols-1 sm:grid-cols-12 border-b border-gray-100 pb-2 gap-1">
+                    <div className="grid grid-cols-1 sm:grid-cols-12 gap-1">
                       <div className="col-span-1 sm:col-span-4 text-gray-400 font-medium flex items-center gap-1.5"><Heart className="w-3.5 h-3.5 text-saffron shrink-0" /> {lang === 'en' ? 'Height' : lang === 'mix' ? 'लंबाई (Height)' : 'लंबाई'}</div>
                       <div className="col-span-1 sm:col-span-8 text-wedding-maroon font-semibold">5 Feet 6 Inches (5'6")</div>
-                    </div>
-                    <div className="grid grid-cols-1 sm:grid-cols-12 gap-1">
-                      <div className="col-span-1 sm:col-span-4 text-gray-400 font-medium flex items-center gap-1.5"><MapPin className="w-3.5 h-3.5 text-saffron shrink-0" /> {lang === 'en' ? 'Birth Place' : lang === 'mix' ? 'जन्म स्थान (Birthplace)' : 'जन्म स्थान'}</div>
-                      <div className="col-span-1 sm:col-span-8 text-wedding-maroon font-semibold">Samdar Khurd, Gorakhpur, Uttar Pradesh</div>
                     </div>
                   </div>
 
@@ -407,15 +391,11 @@ export default function WeddingCard({ lang = 'mix' }: WeddingCardProps) {
                     <h6 className="font-bold text-saffron flex items-center gap-1.5 mb-1 text-xs uppercase tracking-wide">
                       <BookOpen className="w-4 h-4" /> {lang === 'en' ? 'Education' : lang === 'mix' ? 'शैक्षणिक विवरण (Education)' : 'शैक्षणिक विवरण'}
                     </h6>
-                    <div className="grid grid-cols-1 sm:grid-cols-12 border-b border-gray-100 pb-2 gap-1">
+                    <div className="grid grid-cols-1 sm:grid-cols-12 gap-1">
                       <div className="col-span-1 sm:col-span-4 text-gray-400 font-medium">{lang === 'en' ? 'Degree' : lang === 'mix' ? 'स्नातक (Degree)' : 'स्नातक'}</div>
                       <div className="col-span-1 sm:col-span-8 text-wedding-maroon font-semibold">
                         B.Sc. (ZCB - Zoology, Chemistry, Botany)
                       </div>
-                    </div>
-                    <div className="grid grid-cols-1 sm:grid-cols-12 gap-1">
-                      <div className="col-span-1 sm:col-span-4 text-gray-400 font-medium">{lang === 'en' ? 'Professional' : lang === 'mix' ? 'प्रशिक्षण (Professional)' : 'प्रशिक्षण'}</div>
-                      <div className="col-span-1 sm:col-span-8 text-wedding-maroon font-semibold">B.Ed. (In Progress - 1st Year)</div>
                     </div>
                   </div>
 
