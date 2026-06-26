@@ -1,9 +1,8 @@
 import React, { useState } from 'react';
 import { motion } from 'motion/react';
-import { collection, addDoc } from 'firebase/firestore';
-import { db, handleFirestoreError, OperationType } from '../firebase';
 import { Check, Loader, User, PhoneCall, Users, Heart, Sparkles } from 'lucide-react';
 import { RSVP } from '../types';
+import { submitRsvpToSheets } from '../googleSheets';
 
 interface RsvpFormProps {
   lang?: 'en' | 'hi' | 'mix';
@@ -83,16 +82,12 @@ export default function RsvpForm({ lang = 'hi' }: RsvpFormProps) {
         submittedAt: new Date(),
       };
 
-      await addDoc(collection(db, 'rsvps'), {
-        ...rsvpData,
-        submittedAt: new Date().toISOString()
-      });
+      await submitRsvpToSheets(rsvpData);
 
       setSuccess(true);
     } catch (err: any) {
-      console.error('Error saving RSVP to Firestore:', err);
+      console.error('Error saving RSVP to Sheets:', err);
       setError(lang === 'en' ? 'A minor obstacle occurred. Please try again.' : lang === 'mix' ? 'त्रुटि हुई। कृपया पुनः प्रयास करें (Error. Please retry)' : 'त्रुटि हुई। कृपया पुनः प्रयास करें।');
-      handleFirestoreError(err, OperationType.CREATE, 'rsvps');
     } finally {
       setLoading(false);
     }

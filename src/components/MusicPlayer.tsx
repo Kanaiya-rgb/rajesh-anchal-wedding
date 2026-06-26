@@ -16,21 +16,21 @@ const WEBBING_PLAYLIST: Track[] = [
     name: "Vakratunda Mahakaya (Ganesh Shlok)",
     movie: "Auspicious Blessings Begin",
     artist: "Divine Sacred Chant",
-    url: "/music/ganesh_shlok.mp3",
+    url: "/music/Vakratunda Mahakay.mp3",
     type: 'audio'
   },
   {
     name: "Aaj Se Teri",
     movie: "Padman (Wedding Theme)",
     artist: "Arijit Singh & Amit Trivedi",
-    url: "/music/aaj_se_teri.mp3",
+    url: "/music/Aaj Se Teri.mp3",
     type: 'audio'
   },
   {
     name: "Rab Ne Milayi",
     movie: "Rab Ne Bana Di Jodi",
     artist: "Roop Kumar Rathod",
-    url: "/music/rab_ne_milayi.mp3",
+    url: "/music/Rab Ne Milayi Dhadkan.mp3",
     type: 'audio'
   },
   {

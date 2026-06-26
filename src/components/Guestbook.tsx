@@ -1,9 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { collection, addDoc, onSnapshot, query, orderBy, limit } from 'firebase/firestore';
-import { db, handleFirestoreError, OperationType } from '../firebase';
 import { MessageSquare, Heart, Star, Sparkles, Send, Gift } from 'lucide-react';
 import { BlessingMessage } from '../types';
+import { fetchBlessingsFromSheets, submitBlessingToSheets } from '../googleSheets';
 
 interface GuestbookProps {
   lang?: 'en' | 'hi' | 'mix';
@@ -25,30 +24,18 @@ export default function Guestbook({ lang = 'hi' }: GuestbookProps) {
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
 
-  // Fetch blessings in real-time
+  // Fetch blessings
   useEffect(() => {
-    const blessingsRef = collection(db, 'blessings');
-    const q = query(blessingsRef, orderBy('submittedAt', 'desc'), limit(12));
-
-    const unsubscribe = onSnapshot(q, (snapshot) => {
-      const fetched: BlessingMessage[] = [];
-      snapshot.forEach((doc) => {
-        const data = doc.data();
-        fetched.push({
-          id: doc.id,
-          senderName: data.senderName,
-          relation: data.relation,
-          message: data.message,
-          cardStyle: data.cardStyle ?? 0,
-          submittedAt: new Date(data.submittedAt),
-        });
-      });
+    const loadBlessings = async () => {
+      const fetched = await fetchBlessingsFromSheets();
       setMessages(fetched);
-    }, (error) => {
-      handleFirestoreError(error, OperationType.GET, 'blessings');
-    });
+    };
 
-    return () => unsubscribe();
+    loadBlessings();
+    
+    // Poll for new blessings every 15 seconds to keep it live!
+    const interval = setInterval(loadBlessings, 15000);
+    return () => clearInterval(interval);
   }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -57,21 +44,24 @@ export default function Guestbook({ lang = 'hi' }: GuestbookProps) {
 
     setLoading(true);
     try {
-      await addDoc(collection(db, 'blessings'), {
+      const successSent = await submitBlessingToSheets({
         senderName,
         relation,
         message: messageText,
         cardStyle: activeStyle,
-        submittedAt: new Date().toISOString(),
       });
 
-      setSenderName('');
-      setMessageText('');
-      setSuccess(true);
-      setTimeout(() => setSuccess(false), 4000);
+      if (successSent) {
+        setSenderName('');
+        setMessageText('');
+        setSuccess(true);
+        // Refresh local view immediately
+        const updated = await fetchBlessingsFromSheets();
+        setMessages(updated);
+        setTimeout(() => setSuccess(false), 4000);
+      }
     } catch (err) {
       console.error('Error saving blessing:', err);
-      handleFirestoreError(err, OperationType.CREATE, 'blessings');
     } finally {
       setLoading(false);
     }
