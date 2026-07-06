@@ -17,7 +17,7 @@ const WEBBING_PLAYLIST: Track[] = [
     name: "Vakratunda Mahakaya (Ganesh Shlok)",
     movie: "Auspicious Blessings Begin",
     artist: "Divine Sacred Chant",
-    url: "/music/Vakratunda Mahakay.mp3",
+    url: "/music/Vakratunda Mahakaya.mp3",
     type: 'audio',
     loop: false
   },
@@ -113,7 +113,7 @@ export default function MusicPlayer() {
 
       const firstTrack = WEBBING_PLAYLIST[0];
       const candidates = [
-        "public/music/Vakratunda Mahakaya.mp3",
+        "/music/Vakratunda Mahakaya.mp3",
         firstTrack.backupUrl
       ].filter(Boolean) as string[];
 
@@ -210,7 +210,7 @@ export default function MusicPlayer() {
       stopTanpura();
 
       const candidates = currentTrackIndex === 0 ? [
-        "public/music/Vakratunda Mahakaya.mp3",
+        "/music/Vakratunda Mahakaya.mp3",
         currentTrack.backupUrl
       ].filter(Boolean) as string[] : [
         currentTrack.url,
