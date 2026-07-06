@@ -25,7 +25,7 @@ const WEBBING_PLAYLIST: Track[] = [
     name: "Aaj Se Teri",
     movie: "Padman (Wedding Theme)",
     artist: "Arijit Singh & Amit Trivedi",
-    url: "/music/Aaj Se Teri.mp3",
+    url: "/music/Aaj_Se_Teri.mp3",
     type: 'audio',
     loop: true
   },
@@ -33,7 +33,7 @@ const WEBBING_PLAYLIST: Track[] = [
     name: "Rab Ne Milayi",
     movie: "Rab Ne Bana Di Jodi",
     artist: "Roop Kumar Rathod",
-    url: "/music/Rab Ne Milayi Dhadkan.mp3",
+    url: "/music/Rab_Ne_Milayi_Dhadkan.mp3",
     type: 'audio',
     loop: true
   },
