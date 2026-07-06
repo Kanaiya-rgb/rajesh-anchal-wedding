@@ -186,13 +186,14 @@ export default function MusicPlayer() {
   // Audio tag control
   useEffect(() => {
     // If we are already playing audio from the direct window play trigger, we don't want to re-instantiate it here if it's already active and matches any candidate
+    const decodedSrc = audioRef.current ? decodeURIComponent(audioRef.current.src) : '';
     const isPlayingCurrentTrack = audioRef.current && isPlaying && currentTrack.type === 'audio' && (
-      audioRef.current.src.endsWith(currentTrack.url) ||
-      (currentTrack.backupUrl && audioRef.current.src.endsWith(currentTrack.backupUrl)) ||
+      decodedSrc.endsWith(currentTrack.url) ||
+      (currentTrack.backupUrl && decodedSrc.endsWith(currentTrack.backupUrl)) ||
       (currentTrackIndex === 0 && (
-        audioRef.current.src.endsWith("/Vakratunda%20Mahakay.mp3") ||
-        audioRef.current.src.includes("Vakratunda") ||
-        audioRef.current.src.includes("Ganpati")
+        decodedSrc.endsWith("/music/Vakratunda Mahakaya.mp3") ||
+        decodedSrc.includes("Vakratunda") ||
+        decodedSrc.includes("Ganpati")
       ))
     );
 
