@@ -119,15 +119,36 @@ export default function WeddingCard({ lang = 'mix' }: WeddingCardProps) {
           
           {/* Groom block */}
           <motion.div 
-            whileHover={{ y: -4, scale: 1.01 }}
-            transition={{ duration: 0.3, ease: "easeOut" }}
+            whileHover={{ y: -8, scale: 1.03, boxShadow: "0px 20px 40px rgba(220,140,5,0.18)" }}
+            transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
             onClick={() => toggleTab('groom')}
-            className={`md:col-span-5 p-6 rounded-3xl bg-white border cursor-pointer transition-all duration-300 flex flex-col justify-between relative group overflow-hidden ${
+            className={`md:col-span-5 p-6 rounded-3xl bg-white border cursor-pointer transition-all duration-500 flex flex-col justify-between relative group overflow-hidden ${
               activeTab === 'groom' 
-                ? 'border-saffron ring-2 ring-saffron/30 shadow-xl' 
-                : 'border-royal-gold/25 shadow-md hover:border-royal-gold hover:shadow-lg'
+                ? 'border-saffron ring-4 ring-saffron/40 shadow-[0_15px_40px_rgba(220,140,5,0.25)]' 
+                : 'border-royal-gold/20 shadow-md hover:border-saffron/50 hover:shadow-lg'
             }`}
           >
+            {/* Smooth Colorful Animated Particles inside Groom Card */}
+            {activeTab === 'groom' && (
+              <div className="absolute inset-0 pointer-events-none overflow-hidden z-0">
+                <motion.div 
+                  animate={{ y: [-10, -80], opacity: [0, 0.8, 0], x: [-15, 15] }}
+                  transition={{ repeat: Infinity, duration: 2.8, ease: "easeInOut" }}
+                  className="absolute bottom-4 left-1/4 w-2.5 h-2.5 rounded-full bg-saffron" 
+                />
+                <motion.div 
+                  animate={{ y: [-20, -100], opacity: [0, 0.7, 0], x: [15, -15] }}
+                  transition={{ repeat: Infinity, duration: 3.4, delay: 0.6, ease: "easeInOut" }}
+                  className="absolute bottom-6 right-1/4 w-2 h-2 rounded-full bg-marigold-yellow" 
+                />
+                <motion.div 
+                  animate={{ y: [-15, -90], opacity: [0, 0.6, 0], x: [8, 25] }}
+                  transition={{ repeat: Infinity, duration: 3.1, delay: 1.2, ease: "easeInOut" }}
+                  className="absolute bottom-2 left-1/2 w-1.5 h-1.5 rounded-full bg-wedding-crimson" 
+                />
+              </div>
+            )}
+
             {/* Background delicate shine */}
             <div className="absolute inset-0 bg-gradient-to-br from-white via-white to-bright-gold/5 pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
             <div className="absolute top-0 right-0 w-12 h-12 border-t-2 border-r-2 border-royal-gold/15 group-hover:border-royal-gold/40 transition-colors pointer-events-none rounded-tr-3xl" />
@@ -199,15 +220,36 @@ export default function WeddingCard({ lang = 'mix' }: WeddingCardProps) {
 
           {/* Bride block */}
           <motion.div 
-            whileHover={{ y: -4, scale: 1.01 }}
-            transition={{ duration: 0.3, ease: "easeOut" }}
+            whileHover={{ y: -8, scale: 1.03, boxShadow: "0px 20px 40px rgba(158,27,50,0.18)" }}
+            transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
             onClick={() => toggleTab('bride')}
-            className={`md:col-span-5 p-6 rounded-3xl bg-white border cursor-pointer transition-all duration-300 flex flex-col justify-between relative group overflow-hidden ${
+            className={`md:col-span-5 p-6 rounded-3xl bg-white border cursor-pointer transition-all duration-500 flex flex-col justify-between relative group overflow-hidden ${
               activeTab === 'bride' 
-                ? 'border-saffron ring-2 ring-saffron/30 shadow-xl' 
-                : 'border-royal-gold/25 shadow-md hover:border-royal-gold hover:shadow-lg'
+                ? 'border-wedding-crimson ring-4 ring-wedding-crimson/40 shadow-[0_15px_40px_rgba(158,27,50,0.25)]' 
+                : 'border-royal-gold/20 shadow-md hover:border-wedding-crimson/50 hover:shadow-lg'
             }`}
           >
+            {/* Smooth Colorful Animated Particles inside Bride Card */}
+            {activeTab === 'bride' && (
+              <div className="absolute inset-0 pointer-events-none overflow-hidden z-0">
+                <motion.div 
+                  animate={{ y: [-10, -80], opacity: [0, 0.8, 0], x: [-15, 15] }}
+                  transition={{ repeat: Infinity, duration: 2.8, ease: "easeInOut" }}
+                  className="absolute bottom-4 left-1/4 w-2.5 h-2.5 rounded-full bg-wedding-crimson" 
+                />
+                <motion.div 
+                  animate={{ y: [-20, -100], opacity: [0, 0.7, 0], x: [15, -15] }}
+                  transition={{ repeat: Infinity, duration: 3.4, delay: 0.6, ease: "easeInOut" }}
+                  className="absolute bottom-6 right-1/4 w-2 h-2 rounded-full bg-saffron" 
+                />
+                <motion.div 
+                  animate={{ y: [-15, -90], opacity: [0, 0.6, 0], x: [8, 25] }}
+                  transition={{ repeat: Infinity, duration: 3.1, delay: 1.2, ease: "easeInOut" }}
+                  className="absolute bottom-2 left-1/2 w-1.5 h-1.5 rounded-full bg-marigold-yellow" 
+                />
+              </div>
+            )}
+
             {/* Background delicate shine */}
             <div className="absolute inset-0 bg-gradient-to-br from-white via-white to-bright-gold/5 pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
             <div className="absolute top-0 left-0 w-12 h-12 border-t-2 border-l-2 border-royal-gold/15 group-hover:border-royal-gold/40 transition-colors pointer-events-none rounded-tl-3xl" />
@@ -351,7 +393,7 @@ export default function WeddingCard({ lang = 'mix' }: WeddingCardProps) {
                       <div className="col-span-1 sm:col-span-4 text-gray-400 font-medium">{lang === 'en' ? 'Siblings' : lang === 'mix' ? 'भाई-बहन (Siblings)' : 'भाई-बहन'}</div>
                       <div className="col-span-1 sm:col-span-8 text-wedding-maroon font-semibold space-y-1">
                         <div>• Radhika Soni <span className="text-gray-500 text-xs">{lang === 'mix' ? '(Elder Sister / बड़ी बहन - Pursuing MBA in London, UK)' : '(Elder Sister - Pursuing MBA in London, UK)'}</span></div>
-                        <div>• Kanaiya Soni <span className="text-gray-500 text-xs">{lang === 'mix' ? '(Younger Brother / छोटा भाई - Pursuing B.E. in CSE, Final Year)' : '(Younger Brother - Pursuing B.E. in CSE, Final Year)'}</span></div>
+                        <div>• Kanaiya Soni <span className="text-gray-500 text-xs">{lang === 'mix' ? '(Younger Brother / छोटा भाई - B.E. in CSE, Completed)' : '(Younger Brother - B.E. in CSE, Completed)'}</span></div>
                       </div>
                     </div>
                     <div className="grid grid-cols-1 sm:grid-cols-12 pb-2 border-b border-gray-100 gap-1">
@@ -391,10 +433,16 @@ export default function WeddingCard({ lang = 'mix' }: WeddingCardProps) {
                     <h6 className="font-bold text-saffron flex items-center gap-1.5 mb-1 text-xs uppercase tracking-wide">
                       <BookOpen className="w-4 h-4" /> {lang === 'en' ? 'Education' : lang === 'mix' ? 'शैक्षणिक विवरण (Education)' : 'शैक्षणिक विवरण'}
                     </h6>
-                    <div className="grid grid-cols-1 sm:grid-cols-12 gap-1">
+                    <div className="grid grid-cols-1 sm:grid-cols-12 border-b border-gray-100 pb-2 gap-1">
                       <div className="col-span-1 sm:col-span-4 text-gray-400 font-medium">{lang === 'en' ? 'Degree' : lang === 'mix' ? 'स्नातक (Degree)' : 'स्नातक'}</div>
                       <div className="col-span-1 sm:col-span-8 text-wedding-maroon font-semibold">
                         B.Sc. (ZCB - Zoology, Chemistry, Botany)
+                      </div>
+                    </div>
+                    <div className="grid grid-cols-1 sm:grid-cols-12 gap-1">
+                      <div className="col-span-1 sm:col-span-4 text-gray-400 font-medium">{lang === 'en' ? 'Professional' : lang === 'mix' ? 'प्रशिक्षण (Professional)' : 'प्रशिक्षण'}</div>
+                      <div className="col-span-1 sm:col-span-8 text-wedding-maroon font-semibold">
+                        {lang === 'en' ? 'B.Ed. (In Progress - 1st Year)' : lang === 'mix' ? 'बी.एड. (प्रथम वर्ष - प्रगति पर / 1st Year In Progress)' : 'बी.एड. (प्रथम वर्ष - प्रगति पर)'}
                       </div>
                     </div>
                   </div>

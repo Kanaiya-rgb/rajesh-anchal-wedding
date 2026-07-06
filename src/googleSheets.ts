@@ -9,78 +9,97 @@ import { RSVP, BlessingMessage } from './types';
 
 const SPREADSHEET_ID = "14nWPvAKtDAHgScXiRxnypHLqNRFcRgIj_kHN6No-Tis";
 
+function parseGoogleSheetRows(rows: any[]): BlessingMessage[] {
+  return rows.map((row: any, idx: number) => {
+    const cols = row.c || [];
+    const getValue = (cell: any) => {
+      if (!cell) return "";
+      return cell.v !== null && cell.v !== undefined ? String(cell.v) : "";
+    };
+
+    const submittedAtVal = getValue(cols[0]);
+    const senderName = getValue(cols[1]);
+    const relation = getValue(cols[2]);
+    const message = getValue(cols[3]);
+    const cardStyleVal = getValue(cols[4]);
+
+    // Handle custom Google Visualization date formats like "Date(2027,1,22,10,30,0)"
+    let submittedAt = new Date();
+    if (submittedAtVal) {
+      if (submittedAtVal.includes("Date(")) {
+        const parts = submittedAtVal.match(/\d+/g);
+        if (parts && parts.length >= 3) {
+          submittedAt = new Date(
+            parseInt(parts[0]),
+            parseInt(parts[1]), // Note: Sheets might return 0-indexed month
+            parseInt(parts[2]),
+            parts[3] ? parseInt(parts[3]) : 0,
+            parts[4] ? parseInt(parts[4]) : 0,
+            parts[5] ? parseInt(parts[5]) : 0
+          );
+        }
+      } else {
+        submittedAt = new Date(submittedAtVal);
+      }
+    }
+
+    return {
+      id: `sheet-${idx}`,
+      senderName: senderName || "शुभचिंतक",
+      relation: relation || "Well Wisher",
+      message: message || "",
+      cardStyle: cardStyleVal ? parseInt(cardStyleVal) || 0 : 0,
+      submittedAt
+    };
+  });
+}
+
 /**
  * Fetch blessings directly from the public Google Sheet using Google's public JSON Visualization endpoint.
  * This does NOT require any API keys or credentials, meaning there's absolutely NO danger of key exposure!
  * Note: For this to work, the spreadsheet must be set to "Anyone with the link can view" in Google Drive.
  */
 export async function fetchBlessingsFromSheets(): Promise<BlessingMessage[]> {
-  const url = `https://docs.google.com/spreadsheets/d/${SPREADSHEET_ID}/gviz/tq?sheet=Blessings&tqx=out:json`;
+  const primaryUrl = `https://docs.google.com/spreadsheets/d/${SPREADSHEET_ID}/gviz/tq?sheet=Shubhkaamna&tqx=out:json`;
+  const fallbackUrl = `https://docs.google.com/spreadsheets/d/${SPREADSHEET_ID}/gviz/tq?sheet=Blessings&tqx=out:json`;
 
   try {
-    const response = await fetch(url);
+    let response = await fetch(primaryUrl);
     if (!response.ok) {
       throw new Error(`HTTP error! status: ${response.status}`);
     }
-    const text = await response.text();
+    let text = await response.text();
     
     // The response is wrapped in a google.visualization.Query.setResponse() function call.
     // We match everything between the outer parentheses.
-    const match = text.match(/google\.visualization\.Query\.setResponse\(([\s\S]*?)\);/);
+    let match = text.match(/google\.visualization\.Query\.setResponse\(([\s\S]*?)\);/);
     if (!match) {
       throw new Error("Invalid Google Sheets JSON structure returned");
     }
     
-    const obj = JSON.parse(match[1]);
-    const table = obj.table;
+    let obj = JSON.parse(match[1]);
+    let table = obj.table;
+
+    // Check if the primary sheet was not found or has an error status
+    if (obj.status === "error" || !table || !table.rows) {
+      console.warn("Shubhkaamna sheet not found or empty, falling back to Blessings tab...");
+      response = await fetch(fallbackUrl);
+      if (response.ok) {
+        text = await response.text();
+        match = text.match(/google\.visualization\.Query\.setResponse\(([\s\S]*?)\);/);
+        if (match) {
+          obj = JSON.parse(match[1]);
+          table = obj.table;
+        }
+      }
+    }
+
     if (!table || !table.rows) {
       // Fallback to local storage if the sheet is empty or hasn't loaded yet
       return getLocalBlessings();
     }
 
-    const rows = table.rows;
-    const sheetBlessings = rows.map((row: any, idx: number) => {
-      const cols = row.c || [];
-      const getValue = (cell: any) => {
-        if (!cell) return "";
-        return cell.v !== null && cell.v !== undefined ? String(cell.v) : "";
-      };
-
-      const submittedAtVal = getValue(cols[0]);
-      const senderName = getValue(cols[1]);
-      const relation = getValue(cols[2]);
-      const message = getValue(cols[3]);
-      const cardStyleVal = getValue(cols[4]);
-
-      // Handle custom Google Visualization date formats like "Date(2027,1,22,10,30,0)"
-      let submittedAt = new Date();
-      if (submittedAtVal) {
-        if (submittedAtVal.includes("Date(")) {
-          const parts = submittedAtVal.match(/\d+/g);
-          if (parts && parts.length >= 3) {
-            submittedAt = new Date(
-              parseInt(parts[0]),
-              parseInt(parts[1]), // Note: Sheets might return 0-indexed month
-              parseInt(parts[2]),
-              parts[3] ? parseInt(parts[3]) : 0,
-              parts[4] ? parseInt(parts[4]) : 0,
-              parts[5] ? parseInt(parts[5]) : 0
-            );
-          }
-        } else {
-          submittedAt = new Date(submittedAtVal);
-        }
-      }
-
-      return {
-        id: `sheet-${idx}`,
-        senderName: senderName || "शुभचिंतक",
-        relation: relation || "Well Wisher",
-        message: message || "",
-        cardStyle: cardStyleVal ? parseInt(cardStyleVal) || 0 : 0,
-        submittedAt
-      };
-    });
+    const sheetBlessings = parseGoogleSheetRows(table.rows);
 
     // Combine spreadsheet blessings with local ones for immediate UI response
     const localBlessings = getLocalBlessings();
@@ -251,7 +270,10 @@ export function getLocalBlessings(): BlessingMessage[] {
  *         data.specialMessage
  *       ]);
  *     } else if (action === "blessing") {
- *       var sheet = ss.getSheetByName("Blessings") || ss.insertSheet("Blessings");
+ *       var sheet = ss.getSheetByName("Shubhkaamna") || ss.getSheetByName("Blessings");
+ *       if (!sheet) {
+ *         sheet = ss.insertSheet("Shubhkaamna");
+ *       }
  *       if (sheet.getLastRow() === 0) {
  *         sheet.appendRow(["Submitted At", "Sender Name", "Relation", "Blessing Message", "Card Style"]);
  *         sheet.getRange(1, 1, 1, 5).setFontWeight("bold").setBackground("#f4ebe1").setFontColor("#800020");
