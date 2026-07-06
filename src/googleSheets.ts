@@ -54,6 +54,41 @@ function parseGoogleSheetRows(rows: any[]): BlessingMessage[] {
   });
 }
 
+function cleanAndGetRecentLocalBlessings(sheetBlessings: BlessingMessage[]): BlessingMessage[] {
+  try {
+    const existing = localStorage.getItem("local_blessings");
+    if (!existing) return [];
+    const parsed = JSON.parse(existing);
+    const now = Date.now();
+    
+    // Keep only local blessings that:
+    // 1. Are less than 2 minutes old (optimistic updates for a seamless UX)
+    // 2. Are not already successfully synced to the Google Sheet (prevent duplicates)
+    const filtered = parsed.filter((localMsg: any) => {
+      const msgTime = new Date(localMsg.submittedAt).getTime();
+      const isRecent = (now - msgTime) < 120000; // 2 minutes
+      if (!isRecent) return false;
+      
+      const alreadyInSheet = sheetBlessings.some(
+        sheetMsg => sheetMsg.senderName.trim().toLowerCase() === localMsg.senderName.trim().toLowerCase() && 
+                    sheetMsg.message.trim().toLowerCase() === localMsg.message.trim().toLowerCase()
+      );
+      return !alreadyInSheet;
+    });
+    
+    // Save clean list back to local storage
+    localStorage.setItem("local_blessings", JSON.stringify(filtered));
+    
+    return filtered.map((b: any) => ({
+      ...b,
+      submittedAt: new Date(b.submittedAt)
+    }));
+  } catch (e) {
+    console.error("Failed to clean local blessings:", e);
+    return [];
+  }
+}
+
 /**
  * Fetch blessings directly from the public Google Sheet using Google's public JSON Visualization endpoint.
  * This does NOT require any API keys or credentials, meaning there's absolutely NO danger of key exposure!
@@ -95,20 +130,16 @@ export async function fetchBlessingsFromSheets(): Promise<BlessingMessage[]> {
     }
 
     if (!table || !table.rows) {
-      // Fallback to local storage if the sheet is empty or hasn't loaded yet
-      return getLocalBlessings();
+      return [];
     }
 
     const sheetBlessings = parseGoogleSheetRows(table.rows);
-
-    // Combine spreadsheet blessings with local ones for immediate UI response
-    const localBlessings = getLocalBlessings();
     
     // Reverse to show the latest blessings first
-    return [...localBlessings, ...sheetBlessings].reverse();
+    return sheetBlessings.reverse();
   } catch (err) {
-    console.warn("Failed to fetch from Google Sheet, falling back to local blessings:", err);
-    return getLocalBlessings();
+    console.warn("Failed to fetch from Google Sheet:", err);
+    return [];
   }
 }
 
