@@ -17,12 +17,25 @@ const stylePresets = [
 
 export default function Guestbook({ lang = 'hi' }: GuestbookProps) {
   const [messages, setMessages] = useState<BlessingMessage[]>([]);
+  const [sessionMessages, setSessionMessages] = useState<BlessingMessage[]>([]);
   const [senderName, setSenderName] = useState('');
   const [relation, setRelation] = useState('Well Wisher');
   const [messageText, setMessageText] = useState('');
   const [activeStyle, setActiveStyle] = useState(0);
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
+  const [errorMsg, setErrorMsg] = useState('');
+
+  // Combine fetched messages with newly submitted session-only messages that are not already in fetched
+  const displayedMessages = React.useMemo(() => {
+    const unsyncedSession = sessionMessages.filter(
+      sess => !messages.some(
+        msg => msg.senderName.trim().toLowerCase() === sess.senderName.trim().toLowerCase() && 
+               msg.message.trim().toLowerCase() === sess.message.trim().toLowerCase()
+      )
+    );
+    return [...unsyncedSession, ...messages];
+  }, [messages, sessionMessages]);
 
   // Fetch blessings
   useEffect(() => {
@@ -43,11 +56,24 @@ export default function Guestbook({ lang = 'hi' }: GuestbookProps) {
     if (!senderName.trim() || !messageText.trim()) return;
 
     setLoading(true);
+    setErrorMsg('');
+    const tempBlessing: BlessingMessage = {
+      id: `session-${Date.now()}`,
+      senderName: senderName.trim(),
+      relation,
+      message: messageText.trim(),
+      cardStyle: activeStyle,
+      submittedAt: new Date()
+    };
+
+    // Add to session messages immediately for optimistic UI response
+    setSessionMessages(prev => [tempBlessing, ...prev]);
+
     try {
       const successSent = await submitBlessingToSheets({
-        senderName,
+        senderName: senderName.trim(),
         relation,
-        message: messageText,
+        message: messageText.trim(),
         cardStyle: activeStyle,
       });
 
@@ -59,9 +85,19 @@ export default function Guestbook({ lang = 'hi' }: GuestbookProps) {
         const updated = await fetchBlessingsFromSheets();
         setMessages(updated);
         setTimeout(() => setSuccess(false), 4000);
+      } else {
+        setErrorMsg(
+          lang === 'hi' 
+            ? 'Error! आपके Google Apps Script URL की सेटिंग अधूरी है या Network Error है। कृपया VITE_APPS_SCRIPT_URL चेक करें।'
+            : 'Error! Google Apps Script URL (VITE_APPS_SCRIPT_URL) is not configured or offline.'
+        );
+        // Remove optimistic message if submission actually failed due to config
+        setSessionMessages(prev => prev.filter(m => m.id !== tempBlessing.id));
       }
     } catch (err) {
       console.error('Error saving blessing:', err);
+      setErrorMsg('Error sending blessing. Please try again.');
+      setSessionMessages(prev => prev.filter(m => m.id !== tempBlessing.id));
     } finally {
       setLoading(false);
     }
@@ -194,6 +230,16 @@ export default function Guestbook({ lang = 'hi' }: GuestbookProps) {
               ✨ {lang === 'mix' ? 'आपका बधाई संदेश अंकित हुआ! (Your blessing is posted!)' : lang === 'en' ? 'Your blessing is posted!' : 'आपका बधाई संदेश आशीर्वाद पटल पर अंकित हुआ!'}
             </motion.div>
           )}
+
+          {errorMsg && (
+            <motion.div
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="mt-3 text-xs text-red-600 font-sans text-center font-semibold bg-red-50 p-2.5 rounded-xl border border-red-100"
+            >
+              ⚠️ {errorMsg}
+            </motion.div>
+          )}
         </div>
 
         {/* Live Blessings Wall Feed */}
@@ -205,11 +251,11 @@ export default function Guestbook({ lang = 'hi' }: GuestbookProps) {
                 {lang === 'mix' ? 'मंगल बधाई पत्र पटल (Greetings Wall)' : lang === 'en' ? 'Auspicious Greetings Wall' : 'मंगल बधाई पत्र पटल (Live)'}
               </span>
               <span className="text-xs bg-wedding-maroon text-bright-gold px-2.5 py-1 rounded-full border border-royal-gold">
-                {messages.length} {lang === 'en' ? 'Wishes' : lang === 'mix' ? 'बधाई संदेश (Wishes)' : 'शुभकामनाएं'}
+                {displayedMessages.length} {lang === 'en' ? 'Wishes' : lang === 'mix' ? 'बधाई संदेश (Wishes)' : 'शुभकामनाएं'}
               </span>
             </h3>
 
-            {messages.length === 0 ? (
+            {displayedMessages.length === 0 ? (
               <div className="flex flex-col items-center justify-center py-20 text-center text-gray-400">
                 <MessageSquare className="w-10 h-10 mb-2 opacity-40" />
                 <p className="text-sm font-wedding-serif italic">
@@ -219,7 +265,7 @@ export default function Guestbook({ lang = 'hi' }: GuestbookProps) {
             ) : (
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 max-h-[420px] overflow-y-auto pr-2">
                 <AnimatePresence>
-                  {messages.map((msg, index) => {
+                  {displayedMessages.map((msg, index) => {
                     const preset = stylePresets[msg.cardStyle] || stylePresets[0];
                     return (
                       <motion.div

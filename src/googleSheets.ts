@@ -10,7 +10,7 @@ import { RSVP, BlessingMessage } from './types';
 const SPREADSHEET_ID = import.meta.env.VITE_SPREADSHEET_ID || "14nWPvAKtDAHgScXiRxnypHLqNRFcRgIj_kHN6No-Tis";
 
 function parseGoogleSheetRows(rows: any[]): BlessingMessage[] {
-  return rows.map((row: any, idx: number) => {
+  const parsed = rows.map((row: any, idx: number) => {
     const cols = row.c || [];
     const getValue = (cell: any) => {
       if (!cell) return "";
@@ -39,7 +39,10 @@ function parseGoogleSheetRows(rows: any[]): BlessingMessage[] {
           );
         }
       } else {
-        submittedAt = new Date(submittedAtVal);
+        const timestamp = Date.parse(submittedAtVal);
+        if (!isNaN(timestamp)) {
+          submittedAt = new Date(timestamp);
+        }
       }
     }
 
@@ -52,41 +55,20 @@ function parseGoogleSheetRows(rows: any[]): BlessingMessage[] {
       submittedAt
     };
   });
-}
 
-function cleanAndGetRecentLocalBlessings(sheetBlessings: BlessingMessage[]): BlessingMessage[] {
-  try {
-    const existing = localStorage.getItem("local_blessings");
-    if (!existing) return [];
-    const parsed = JSON.parse(existing);
-    const now = Date.now();
+  // Filter out headers or empty messages
+  return parsed.filter(item => {
+    const nameLower = item.senderName.toLowerCase().trim();
+    const msgLower = item.message.toLowerCase().trim();
     
-    // Keep only local blessings that:
-    // 1. Are less than 2 minutes old (optimistic updates for a seamless UX)
-    // 2. Are not already successfully synced to the Google Sheet (prevent duplicates)
-    const filtered = parsed.filter((localMsg: any) => {
-      const msgTime = new Date(localMsg.submittedAt).getTime();
-      const isRecent = (now - msgTime) < 120000; // 2 minutes
-      if (!isRecent) return false;
-      
-      const alreadyInSheet = sheetBlessings.some(
-        sheetMsg => sheetMsg.senderName.trim().toLowerCase() === localMsg.senderName.trim().toLowerCase() && 
-                    sheetMsg.message.trim().toLowerCase() === localMsg.message.trim().toLowerCase()
-      );
-      return !alreadyInSheet;
-    });
-    
-    // Save clean list back to local storage
-    localStorage.setItem("local_blessings", JSON.stringify(filtered));
-    
-    return filtered.map((b: any) => ({
-      ...b,
-      submittedAt: new Date(b.submittedAt)
-    }));
-  } catch (e) {
-    console.error("Failed to clean local blessings:", e);
-    return [];
-  }
+    if (nameLower === "sender name" || msgLower === "blessing message" || msgLower === "message" || nameLower === "submitted at") {
+      return false;
+    }
+    if (!item.message.trim()) {
+      return false;
+    }
+    return true;
+  });
 }
 
 /**
@@ -103,24 +85,31 @@ export async function fetchBlessingsFromSheets(): Promise<BlessingMessage[]> {
     try {
       const response = await fetch(url);
       if (!response.ok) {
+        console.warn(`Fetch to URL ${url} failed with status: ${response.status}`);
         return null;
       }
       const text = await response.text();
       const match = text.match(/google\.visualization\.Query\.setResponse\(([\s\S]*?)\);/);
-      if (!match) return null;
+      if (!match) {
+        console.warn(`Response from ${url} did not match google.visualization regex. Text snippet: ${text.slice(0, 100)}`);
+        return null;
+      }
 
       const obj = JSON.parse(match[1]);
       if (obj.status === "error") {
+        console.warn(`Google Sheet API returned error for URL ${url}:`, obj.errors);
         return null;
       }
 
       const table = obj.table;
       if (!table || !table.rows || table.rows.length === 0) {
+        console.warn(`No table rows found in Google Sheet response for URL ${url}`);
         return null;
       }
 
       return table.rows;
     } catch (e) {
+      console.error(`Exception while fetching from ${url}:`, e);
       return null;
     }
   }
@@ -162,7 +151,7 @@ export async function submitRsvpToSheets(rsvp: RSVP): Promise<boolean> {
   if (!APPS_SCRIPT_URL) {
     console.warn("VITE_APPS_SCRIPT_URL is not defined yet. Saving RSVP in Local Storage.");
     saveRsvpLocally(rsvp);
-    return true;
+    return false;
   }
 
   try {
@@ -190,7 +179,7 @@ export async function submitRsvpToSheets(rsvp: RSVP): Promise<boolean> {
   } catch (err) {
     console.error("CORS or network error submitting RSVP, saved locally:", err);
     saveRsvpLocally(rsvp);
-    return true;
+    return false;
   }
 }
 
@@ -210,8 +199,8 @@ export async function submitBlessingToSheets(blessing: Omit<BlessingMessage, "id
   saveBlessingLocally(newBlessing);
 
   if (!APPS_SCRIPT_URL) {
-    console.warn("VITE_APPS_SCRIPT_URL is not defined yet. Saving Blessing in Local Storage.");
-    return true;
+    console.warn("VITE_APPS_SCRIPT_URL is not defined yet.");
+    return false;
   }
 
   try {
@@ -233,7 +222,7 @@ export async function submitBlessingToSheets(blessing: Omit<BlessingMessage, "id
     return true; // Return true as fetch successfully dispatched and no exception was thrown
   } catch (err) {
     console.error("CORS or network error submitting Blessing, saved locally:", err);
-    return true;
+    return false;
   }
 }
 
