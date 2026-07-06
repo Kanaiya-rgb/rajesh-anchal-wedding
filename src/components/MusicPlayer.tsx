@@ -9,6 +9,7 @@ interface Track {
   url: string;
   backupUrl?: string;
   type: 'audio' | 'synthesized';
+  loop?: boolean;
 }
 
 const WEBBING_PLAYLIST: Track[] = [
@@ -17,21 +18,24 @@ const WEBBING_PLAYLIST: Track[] = [
     movie: "Auspicious Blessings Begin",
     artist: "Divine Sacred Chant",
     url: "/music/Vakratunda Mahakay.mp3",
-    type: 'audio'
+    type: 'audio',
+    loop: false
   },
   {
     name: "Aaj Se Teri",
     movie: "Padman (Wedding Theme)",
     artist: "Arijit Singh & Amit Trivedi",
     url: "/music/Aaj Se Teri.mp3",
-    type: 'audio'
+    type: 'audio',
+    loop: true
   },
   {
     name: "Rab Ne Milayi",
     movie: "Rab Ne Bana Di Jodi",
     artist: "Roop Kumar Rathod",
     url: "/music/Rab Ne Milayi Dhadkan.mp3",
-    type: 'audio'
+    type: 'audio',
+    loop: true
   },
   {
     name: "Traditional Tanpura & Bell",
@@ -108,47 +112,67 @@ export default function MusicPlayer() {
       }
 
       const firstTrack = WEBBING_PLAYLIST[0];
-      const audioInstance = new Audio(firstTrack.url);
-      audioInstance.loop = true;
-      audioInstance.volume = 0.55;
+      const candidates = [
+        "public/music/Vakratunda Mahakaya.mp3",
+        firstTrack.backupUrl
+      ].filter(Boolean) as string[];
 
-      const handleDirectError = () => {
-        if (firstTrack.backupUrl && audioInstance.src !== firstTrack.backupUrl) {
-          console.log("Direct play primary URL failed, playing backup:", firstTrack.backupUrl);
-          audioInstance.src = firstTrack.backupUrl;
-          audioInstance.play().catch((err) => {
-            console.warn("Direct play backup failed:", err);
-            if (err.name !== 'NotAllowedError' && err.name !== 'AbortError') {
-              setHasError(true);
-              const droneIndex = WEBBING_PLAYLIST.findIndex(t => t.type === 'synthesized');
-              if (droneIndex !== -1) setCurrentTrackIndex(droneIndex);
-            } else if (err.name === 'NotAllowedError') {
-              setIsPlaying(false);
-            }
-          });
-        } else {
+      let attemptIndex = 0;
+      let audioInstance: HTMLAudioElement;
+
+      const tryDirectPlay = () => {
+        if (attemptIndex >= candidates.length) {
+          console.warn("All audio play attempts failed.");
           setHasError(true);
           const droneIndex = WEBBING_PLAYLIST.findIndex(t => t.type === 'synthesized');
           if (droneIndex !== -1) setCurrentTrackIndex(droneIndex);
+          return;
+        }
+
+        const currentUrl = candidates[attemptIndex];
+        console.log("Direct play: attempting candidate", attemptIndex, currentUrl);
+
+        if (audioInstance) {
+          audioInstance.pause();
+          audioInstance.onerror = null;
+        }
+
+        audioInstance = new Audio(currentUrl);
+        audioInstance.loop = firstTrack.loop !== false;
+        audioInstance.volume = 0.55;
+
+        audioInstance.onended = () => {
+          if (firstTrack.loop === false) {
+            console.log("First track (Ganesha Shlok) ended. Advancing to Aaj Se Teri.");
+            setCurrentTrackIndex(1);
+            setIsPlaying(true);
+          }
+        };
+
+        const handleAttemptError = () => {
+          console.warn("Direct play candidate failed:", currentUrl);
+          attemptIndex++;
+          tryDirectPlay();
+        };
+
+        audioInstance.onerror = handleAttemptError;
+        audioRef.current = audioInstance;
+
+        const playPromise = audioInstance.play();
+        if (playPromise !== undefined) {
+          playPromise.catch((error) => {
+            if (error.name === 'NotAllowedError') {
+              setIsPlaying(false);
+            } else if (error.name === 'AbortError') {
+              console.log("Direct play aborted normally.");
+            } else {
+              handleAttemptError();
+            }
+          });
         }
       };
 
-      audioInstance.onerror = handleDirectError;
-      audioRef.current = audioInstance;
-
-      const playPromise = audioInstance.play();
-      if (playPromise !== undefined) {
-        playPromise.catch((error) => {
-          console.warn("Direct play blocked, trying fallback:", error);
-          if (error.name === 'NotAllowedError') {
-            setIsPlaying(false);
-          } else if (error.name === 'AbortError') {
-            console.log("Direct play aborted normally.");
-          } else {
-            handleDirectError();
-          }
-        });
-      }
+      tryDirectPlay();
     };
 
     window.addEventListener('play-wedding-music', handlePlayOnEnter);
@@ -161,8 +185,18 @@ export default function MusicPlayer() {
 
   // Audio tag control
   useEffect(() => {
-    // If we are already playing audio from the direct window play trigger, we don't want to re-instantiate it here if it's already active and matches the URL
-    if (audioRef.current && isPlaying && currentTrack.type === 'audio' && audioRef.current.src.endsWith(currentTrack.url)) {
+    // If we are already playing audio from the direct window play trigger, we don't want to re-instantiate it here if it's already active and matches any candidate
+    const isPlayingCurrentTrack = audioRef.current && isPlaying && currentTrack.type === 'audio' && (
+      audioRef.current.src.endsWith(currentTrack.url) ||
+      (currentTrack.backupUrl && audioRef.current.src.endsWith(currentTrack.backupUrl)) ||
+      (currentTrackIndex === 0 && (
+        audioRef.current.src.endsWith("/Vakratunda%20Mahakay.mp3") ||
+        audioRef.current.src.includes("Vakratunda") ||
+        audioRef.current.src.includes("Ganpati")
+      ))
+    );
+
+    if (isPlayingCurrentTrack) {
       return;
     }
 
@@ -174,45 +208,69 @@ export default function MusicPlayer() {
 
     if (currentTrack.type === 'audio' && isPlaying) {
       stopTanpura();
-      const audioInstance = new Audio(currentTrack.url);
-      audioInstance.loop = true;
-      audioInstance.volume = 0.45;
 
-      const handleAudioError = () => {
-        if (currentTrack.backupUrl && audioInstance.src !== currentTrack.backupUrl) {
-          console.log("Primary URL failed, playing backup:", currentTrack.backupUrl);
-          audioInstance.src = currentTrack.backupUrl;
-          audioInstance.play().catch((err) => {
-            console.warn("Backup URL failed:", err);
-            if (err.name !== 'NotAllowedError' && err.name !== 'AbortError') {
-              setHasError(true);
-              fallbackToDrone();
-            } else if (err.name === 'NotAllowedError') {
-              setIsPlaying(false);
-            }
-          });
-        } else {
+      const candidates = currentTrackIndex === 0 ? [
+        "public/music/Vakratunda Mahakaya.mp3",
+        currentTrack.backupUrl
+      ].filter(Boolean) as string[] : [
+        currentTrack.url,
+        currentTrack.backupUrl
+      ].filter(Boolean) as string[];
+
+      let attemptIndex = 0;
+      let audioInstance: HTMLAudioElement;
+
+      const tryPlayTrack = () => {
+        if (attemptIndex >= candidates.length) {
           setHasError(true);
           fallbackToDrone();
+          return;
+        }
+
+        const currentUrl = candidates[attemptIndex];
+        console.log("General playback: attempting candidate", attemptIndex, currentUrl);
+
+        if (audioInstance) {
+          audioInstance.pause();
+          audioInstance.onerror = null;
+        }
+
+        audioInstance = new Audio(currentUrl);
+        audioInstance.loop = currentTrack.loop !== false;
+        audioInstance.volume = 0.45;
+
+        const handleAudioError = () => {
+          console.warn("General playback candidate failed:", currentUrl);
+          attemptIndex++;
+          tryPlayTrack();
+        };
+
+        audioInstance.onended = () => {
+          if (currentTrackIndex === 0) {
+            console.log("Track index 0 (Ganesha Shlok) ended. Auto-advancing to Aaj Se Teri.");
+            setCurrentTrackIndex(1);
+            setIsPlaying(true);
+          }
+        };
+
+        audioInstance.onerror = handleAudioError;
+        audioRef.current = audioInstance;
+        
+        const playPromise = audioInstance.play();
+        if (playPromise !== undefined) {
+          playPromise.catch((error) => {
+            if (error.name === 'NotAllowedError') {
+              setIsPlaying(false);
+            } else if (error.name === 'AbortError') {
+              console.log("Playback aborted normally.");
+            } else {
+              handleAudioError();
+            }
+          });
         }
       };
 
-      audioInstance.onerror = handleAudioError;
-      audioRef.current = audioInstance;
-      
-      const playPromise = audioInstance.play();
-      if (playPromise !== undefined) {
-        playPromise.catch((error) => {
-          console.warn("Playback blocked or failed:", error);
-          if (error.name === 'NotAllowedError') {
-            setIsPlaying(false);
-          } else if (error.name === 'AbortError') {
-            console.log("Playback aborted normally.");
-          } else {
-            handleAudioError();
-          }
-        });
-      }
+      tryPlayTrack();
     } else if (currentTrack.type === 'synthesized' && isPlaying) {
       if (audioRef.current) {
         audioRef.current.pause();
