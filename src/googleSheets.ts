@@ -7,7 +7,7 @@
 import { RSVP, BlessingMessage } from './types';
 
 
-const SPREADSHEET_ID = "14nWPvAKtDAHgScXiRxnypHLqNRFcRgIj_kHN6No-Tis";
+const SPREADSHEET_ID = import.meta.env.VITE_SPREADSHEET_ID || "14nWPvAKtDAHgScXiRxnypHLqNRFcRgIj_kHN6No-Tis";
 
 function parseGoogleSheetRows(rows: any[]): BlessingMessage[] {
   return rows.map((row: any, idx: number) => {
@@ -97,50 +97,58 @@ function cleanAndGetRecentLocalBlessings(sheetBlessings: BlessingMessage[]): Ble
 export async function fetchBlessingsFromSheets(): Promise<BlessingMessage[]> {
   const primaryUrl = `https://docs.google.com/spreadsheets/d/${SPREADSHEET_ID}/gviz/tq?sheet=Shubhkaamna&tqx=out:json`;
   const fallbackUrl = `https://docs.google.com/spreadsheets/d/${SPREADSHEET_ID}/gviz/tq?sheet=Blessings&tqx=out:json`;
+  const defaultUrl = `https://docs.google.com/spreadsheets/d/${SPREADSHEET_ID}/gviz/tq?tqx=out:json`;
 
-  try {
-    let response = await fetch(primaryUrl);
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
-    }
-    let text = await response.text();
-    
-    // The response is wrapped in a google.visualization.Query.setResponse() function call.
-    // We match everything between the outer parentheses.
-    let match = text.match(/google\.visualization\.Query\.setResponse\(([\s\S]*?)\);/);
-    if (!match) {
-      throw new Error("Invalid Google Sheets JSON structure returned");
-    }
-    
-    let obj = JSON.parse(match[1]);
-    let table = obj.table;
-
-    // Check if the primary sheet was not found or has an error status
-    if (obj.status === "error" || !table || !table.rows) {
-      console.warn("Shubhkaamna sheet not found or empty, falling back to Blessings tab...");
-      response = await fetch(fallbackUrl);
-      if (response.ok) {
-        text = await response.text();
-        match = text.match(/google\.visualization\.Query\.setResponse\(([\s\S]*?)\);/);
-        if (match) {
-          obj = JSON.parse(match[1]);
-          table = obj.table;
-        }
+  async function fetchSheetRows(url: string): Promise<any[] | null> {
+    try {
+      const response = await fetch(url);
+      if (!response.ok) {
+        return null;
       }
-    }
+      const text = await response.text();
+      const match = text.match(/google\.visualization\.Query\.setResponse\(([\s\S]*?)\);/);
+      if (!match) return null;
 
-    if (!table || !table.rows) {
-      return [];
-    }
+      const obj = JSON.parse(match[1]);
+      if (obj.status === "error") {
+        return null;
+      }
 
-    const sheetBlessings = parseGoogleSheetRows(table.rows);
-    
-    // Reverse to show the latest blessings first
-    return sheetBlessings.reverse();
-  } catch (err) {
-    console.warn("Failed to fetch from Google Sheet:", err);
+      const table = obj.table;
+      if (!table || !table.rows || table.rows.length === 0) {
+        return null;
+      }
+
+      return table.rows;
+    } catch (e) {
+      return null;
+    }
+  }
+
+  // 1. Try Shubhkaamna sheet first
+  let rows = await fetchSheetRows(primaryUrl);
+
+  // 2. If Shubhkaamna is not there/empty, try Blessings
+  if (!rows) {
+    console.warn("Shubhkaamna sheet not found or empty, trying Blessings sheet...");
+    rows = await fetchSheetRows(fallbackUrl);
+  }
+
+  // 3. If both are missing/empty, try default first sheet of the spreadsheet
+  if (!rows) {
+    console.warn("Blessings sheet not found or empty, trying default first sheet...");
+    rows = await fetchSheetRows(defaultUrl);
+  }
+
+  if (!rows) {
+    console.warn("No data rows found in any Google Sheet tab.");
     return [];
   }
+
+  const sheetBlessings = parseGoogleSheetRows(rows);
+  
+  // Reverse to show the latest blessings first
+  return sheetBlessings.reverse();
 }
 
 /**
