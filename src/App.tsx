@@ -4,6 +4,7 @@ import PetalAnimation from './components/PetalAnimation';
 import GaneshaHeader from './components/GaneshaHeader';
 import Countdown from './components/Countdown';
 import WeddingCard from './components/WeddingCard';
+import Gallery from './components/Gallery';
 import EventTimeline from './components/EventTimeline';
 import RsvpForm from './components/RsvpForm';
 import Guestbook from './components/Guestbook';
@@ -214,6 +215,11 @@ export default function App() {
             <div className="absolute bottom-0 right-0 w-8 h-8 border-b-2 border-r-2 border-royal-gold" />
             {/* The wedding date is February 22, 2027 */}
             <Countdown targetDateStr="2027-02-22T11:00:00+05:30" lang={lang} />
+          </section>
+
+          {/* NEW: RECENT SAGAI / ENGAGEMENT GALLERY SECTION */}
+          <section className="mb-12">
+            <Gallery lang={lang} />
           </section>
 
           {/* 5. MULTI-DAY CEREMONY TIMELINE */}

@@ -182,13 +182,13 @@ export default function WeddingCard({ lang = 'mix' }: WeddingCardProps) {
               <div className="text-xs text-gray-500 font-wedding-serif leading-relaxed px-1">
                 {lang === 'mix' ? (
                   <span className="block space-y-1 text-center">
-                    <span className="block font-wedding-devanagari text-wedding-maroon font-bold text-xs leading-normal">एम.एससी (ऑर्गेनिक केमिस्ट्री)। श्री हनुमान सोनी एवं श्रीमती गीता सोनी के सुपुत्र।</span>
-                    <span className="block text-[10px] text-gray-400 font-medium leading-normal">M.Sc. Organic Chemistry. Loving son of Mr. Hanuman &amp; Mrs. Geeta Soni.</span>
+                    <span className="block font-wedding-devanagari text-wedding-maroon font-bold text-xs leading-normal">एम.एससी (केमिस्ट्री)। श्री हनुमान सोनी एवं श्रीमती गीता सोनी के सुपुत्र।</span>
+                    <span className="block text-[10px] text-gray-400 font-medium leading-normal">M.Sc. Chemistry. Loving son of Mr. Hanuman &amp; Mrs. Geeta Soni.</span>
                   </span>
                 ) : lang === 'en' ? (
-                  <p>"M.Sc. Organic Chemistry. Loving son of Mr. Hanuman & Mrs. Geeta Soni."</p>
+                  <p>"M.Sc. Chemistry. Loving son of Mr. Hanuman & Mrs. Geeta Soni."</p>
                 ) : (
-                  <p>"एम.एससी (ऑर्गेनिक केमिस्ट्री)। श्री हनुमान सोनी एवं श्रीमती गीता सोनी के सुपुत्र।"</p>
+                  <p>"एम.एससी (केमिस्ट्री)। श्री हनुमान सोनी एवं श्रीमती गीता सोनी के सुपुत्र।"</p>
                 )}
               </div>
             </div>
@@ -367,7 +367,7 @@ export default function WeddingCard({ lang = 'mix' }: WeddingCardProps) {
                     <div className="grid grid-cols-1 sm:grid-cols-12 gap-1">
                       <div className="col-span-1 sm:col-span-4 text-gray-400 font-medium">{lang === 'en' ? 'Education' : lang === 'mix' ? 'योग्यता (Education)' : 'योग्यता'}</div>
                       <div className="col-span-1 sm:col-span-8 text-wedding-maroon font-semibold">
-                        M.Sc. Organic Chemistry (2022) · B.Sc. Chemistry (2020)
+                        {lang === 'en' ? 'M.Sc. Chemistry' : lang === 'mix' ? 'एम.एससी (केमिस्ट्री) / M.Sc. Chemistry' : 'एम.एससी (केमिस्ट्री)'}
                       </div>
                     </div>
                   </div>
@@ -380,13 +380,13 @@ export default function WeddingCard({ lang = 'mix' }: WeddingCardProps) {
                     <div className="grid grid-cols-1 sm:grid-cols-12 border-b border-gray-100 pb-2 gap-1">
                       <div className="col-span-1 sm:col-span-4 text-gray-400 font-medium">{lang === 'en' ? 'Father' : lang === 'mix' ? 'पिताजी (Father)' : 'पिताजी'}</div>
                       <div className="col-span-1 sm:col-span-8 text-wedding-maroon font-bold">
-                        Mr. Hanuman Soni <span className="font-normal text-xs text-gray-500">{lang === 'mix' ? '(Self-Employed JCB Operator / स्व-व्यवसायी जेसीबी ऑपरेटर)' : '(Self-Employed JCB Operator)'}</span>
+                        Mr. Hanuman Soni
                       </div>
                     </div>
                     <div className="grid grid-cols-1 sm:grid-cols-12 border-b border-gray-100 pb-2 gap-1">
                       <div className="col-span-1 sm:col-span-4 text-gray-400 font-medium">{lang === 'en' ? 'Mother' : lang === 'mix' ? 'माताजी (Mother)' : 'माताजी'}</div>
                       <div className="col-span-1 sm:col-span-8 text-wedding-maroon font-semibold">
-                        Mrs. Geeta Soni <span className="font-normal text-xs text-gray-500">{lang === 'mix' ? '(Housewife / गृहणी)' : '(Housewife)'}</span>
+                        Mrs. Geeta Soni
                       </div>
                     </div>
                     <div className="grid grid-cols-1 sm:grid-cols-12 border-b border-gray-100 pb-2 gap-1">
@@ -433,16 +433,10 @@ export default function WeddingCard({ lang = 'mix' }: WeddingCardProps) {
                     <h6 className="font-bold text-saffron flex items-center gap-1.5 mb-1 text-xs uppercase tracking-wide">
                       <BookOpen className="w-4 h-4" /> {lang === 'en' ? 'Education' : lang === 'mix' ? 'शैक्षणिक विवरण (Education)' : 'शैक्षणिक विवरण'}
                     </h6>
-                    <div className="grid grid-cols-1 sm:grid-cols-12 border-b border-gray-100 pb-2 gap-1">
+                    <div className="grid grid-cols-1 sm:grid-cols-12 gap-1">
                       <div className="col-span-1 sm:col-span-4 text-gray-400 font-medium">{lang === 'en' ? 'Degree' : lang === 'mix' ? 'स्नातक (Degree)' : 'स्नातक'}</div>
                       <div className="col-span-1 sm:col-span-8 text-wedding-maroon font-semibold">
                         B.Sc. (ZCB - Zoology, Chemistry, Botany)
-                      </div>
-                    </div>
-                    <div className="grid grid-cols-1 sm:grid-cols-12 gap-1">
-                      <div className="col-span-1 sm:col-span-4 text-gray-400 font-medium">{lang === 'en' ? 'Professional' : lang === 'mix' ? 'प्रशिक्षण (Professional)' : 'प्रशिक्षण'}</div>
-                      <div className="col-span-1 sm:col-span-8 text-wedding-maroon font-semibold">
-                        {lang === 'en' ? 'B.Ed. (In Progress - 1st Year)' : lang === 'mix' ? 'बी.एड. (प्रथम वर्ष - प्रगति पर / 1st Year In Progress)' : 'बी.एड. (प्रथम वर्ष - प्रगति पर)'}
                       </div>
                     </div>
                   </div>
@@ -455,13 +449,13 @@ export default function WeddingCard({ lang = 'mix' }: WeddingCardProps) {
                     <div className="grid grid-cols-1 sm:grid-cols-12 border-b border-gray-100 pb-2 gap-1">
                       <div className="col-span-1 sm:col-span-4 text-gray-400 font-medium">{lang === 'en' ? 'Father' : lang === 'mix' ? 'पिताजी (Father)' : 'पिताजी'}</div>
                       <div className="col-span-1 sm:col-span-8 text-wedding-maroon font-bold">
-                        Mr. Munna Soni <span className="font-normal text-xs text-gray-500">{lang === 'mix' ? '(Worker in Roca Bathroom Products Pvt. Ltd. / रोका बाथरूम प्रोडक्ट्स में कार्यरत)' : '(Worker in Roca Bathroom Products Pvt. Ltd.)'}</span>
+                        Mr. Munna Soni
                       </div>
                     </div>
                     <div className="grid grid-cols-1 sm:grid-cols-12 border-b border-gray-100 pb-2 gap-1">
                       <div className="col-span-1 sm:col-span-4 text-gray-400 font-medium">{lang === 'en' ? 'Mother' : lang === 'mix' ? 'माताजी (Mother)' : 'माताजी'}</div>
                       <div className="col-span-1 sm:col-span-8 text-wedding-maroon font-semibold">
-                        Mrs. Sangeeta Soni <span className="font-normal text-xs text-gray-500">{lang === 'mix' ? '(Housewife / गृहणी)' : '(Housewife)'}</span>
+                        Mrs. Sangeeta Soni
                       </div>
                     </div>
                     <div className="grid grid-cols-1 sm:grid-cols-12 border-b border-gray-100 pb-2 gap-1">
