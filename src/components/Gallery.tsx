@@ -111,7 +111,33 @@ export default function Gallery({ lang }: GalleryProps) {
   const [activeIndex, setActiveIndex] = useState(0);
   const [dragActive, setDragActive] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [mainLoading, setMainLoading] = useState(true);
+  const [modalLoading, setModalLoading] = useState(true);
   const fileInputRef = useRef<HTMLInputElement>(null);
+
+  // Reset loading states when the active item changes
+  useEffect(() => {
+    setMainLoading(true);
+    setModalLoading(true);
+  }, [activeIndex]);
+
+  // Prefetch adjacent images in the background to speed up carousel navigation
+  useEffect(() => {
+    if (items.length <= 1) return;
+    
+    const nextIndex = (activeIndex + 1) % items.length;
+    const prevIndex = (activeIndex - 1 + items.length) % items.length;
+    
+    const urlsToPreload = [items[nextIndex].url, items[prevIndex].url];
+    
+    urlsToPreload.forEach((url) => {
+      // Only preload actual web paths or preloaded assets
+      if (url.startsWith('/') || url.startsWith('http')) {
+        const img = new Image();
+        img.src = url;
+      }
+    });
+  }, [activeIndex, items]);
 
   const handleNext = () => {
     setActiveIndex((prev) => (prev + 1) % items.length);
@@ -257,6 +283,20 @@ export default function Gallery({ lang }: GalleryProps) {
             onClick={() => setIsModalOpen(true)}
             title={lang === 'en' ? 'Click to view full screen' : 'बड़ा देखने के लिए क्लिक करें'}
           >
+            {mainLoading && (
+              <div className="absolute inset-0 bg-[#faf7f2]/90 z-20 flex flex-col items-center justify-center gap-3">
+                {/* Spinning decorative golden mandala */}
+                <svg className="w-10 h-10 text-wedding-crimson animate-spin" viewBox="0 0 100 100">
+                  <circle cx="50" cy="50" r="40" stroke="currentColor" strokeWidth="2.5" strokeDasharray="15 8" fill="none" />
+                  <path d="M50 10 L50 22 M50 78 L50 90 M10 50 L22 50 M78 50 L90 50" stroke="currentColor" strokeWidth="3.5" strokeLinecap="round" />
+                  <circle cx="50" cy="50" r="10" fill="currentColor" className="opacity-80" />
+                </svg>
+                <span className="text-[10px] font-bold text-wedding-maroon uppercase tracking-widest font-wedding-devanagari animate-pulse">
+                  {lang === 'mix' ? 'फोटो लोड हो रहा है...' : lang === 'en' ? 'Loading Photo...' : 'तस्वीर लोड हो रही है...'}
+                </span>
+              </div>
+            )}
+
             <AnimatePresence mode="wait">
               <motion.div
                 key={currentItem.id}
@@ -270,7 +310,8 @@ export default function Gallery({ lang }: GalleryProps) {
                   src={currentItem.url}
                   alt={lang === 'en' ? currentItem.titleEn : currentItem.titleHi}
                   referrerPolicy="no-referrer"
-                  className="w-full h-full object-cover"
+                  onLoad={() => setMainLoading(false)}
+                  className={`w-full h-full object-cover transition-opacity duration-300 ${mainLoading ? 'opacity-0' : 'opacity-100'}`}
                 />
                 
                 {/* Traditional Warm Gold Aesthetic Overlay */}
@@ -475,17 +516,29 @@ export default function Gallery({ lang }: GalleryProps) {
 
               {/* Central Expanded Image Display */}
               <div className="relative w-full h-full flex items-center justify-center overflow-hidden p-2">
+                {modalLoading && (
+                  <div className="absolute inset-0 flex flex-col items-center justify-center gap-3 z-10">
+                    <svg className="w-12 h-12 text-saffron animate-spin" viewBox="0 0 100 100">
+                      <circle cx="50" cy="50" r="40" stroke="currentColor" strokeWidth="2.5" strokeDasharray="18 10" fill="none" />
+                      <circle cx="50" cy="50" r="12" fill="currentColor" className="opacity-60" />
+                    </svg>
+                    <div className="text-xs font-bold text-saffron uppercase tracking-widest font-wedding-devanagari animate-pulse">
+                      {lang === 'mix' ? 'उच्च-गुणवत्ता फोटो लोड हो रहा है...' : lang === 'en' ? 'Loading High-Res Photo...' : 'तस्वीर लोड हो रही है...'}
+                    </div>
+                  </div>
+                )}
                 <AnimatePresence mode="wait">
                   <motion.img
                     key={currentItem.id}
                     src={currentItem.url}
                     alt={lang === 'en' ? currentItem.titleEn : currentItem.titleHi}
                     initial={{ opacity: 0, scale: 0.95 }}
-                    animate={{ opacity: 1, scale: 1 }}
+                    animate={{ opacity: modalLoading ? 0 : 1, scale: 1 }}
                     exit={{ opacity: 0, scale: 0.95 }}
+                    onLoad={() => setModalLoading(false)}
                     transition={{ duration: 0.3 }}
                     referrerPolicy="no-referrer"
-                    className="max-w-full max-h-full object-contain rounded-xl shadow-2xl border border-royal-gold/20"
+                    className={`max-w-full max-h-full object-contain rounded-xl shadow-2xl border border-royal-gold/20 transition-opacity duration-300 ${modalLoading ? 'opacity-0' : 'opacity-100'}`}
                   />
                 </AnimatePresence>
               </div>
