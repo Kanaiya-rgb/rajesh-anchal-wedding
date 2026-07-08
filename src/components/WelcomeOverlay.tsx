@@ -22,6 +22,19 @@ export default function WelcomeOverlay({ onEnter }: WelcomeOverlayProps) {
   const [image1Loaded, setImage1Loaded] = useState(false);
   const [image2Loaded, setImage2Loaded] = useState(false);
 
+  // Preload couple images for instantaneous and ultra-smooth transition
+  useEffect(() => {
+    const img1 = new Image();
+    img1.src = couple1Img;
+    img1.onload = () => setImage1Loaded(true);
+    img1.onerror = () => setPhotoError1(true);
+
+    const img2 = new Image();
+    img2.src = couple2Img;
+    img2.onload = () => setImage2Loaded(true);
+    img2.onerror = () => setPhotoError2(true);
+  }, []);
+
   // Cycle the couple's welcoming photos to simulate welcoming movement
   useEffect(() => {
     if (phase === 'welcome-couple') {
@@ -459,7 +472,7 @@ export default function WelcomeOverlay({ onEnter }: WelcomeOverlayProps) {
                   <div className="relative w-full h-full rounded-t-full rounded-b-xl overflow-hidden bg-[#240307]">
                     
                     {/* PHOTO 1: Without Garlands (Normal) */}
-                    <AnimatePresence mode="wait">
+                    <AnimatePresence>
                       {activePhoto === 1 ? (
                         <motion.div
                           key="photo1"
