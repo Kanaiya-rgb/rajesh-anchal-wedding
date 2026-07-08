@@ -1,10 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { Sparkles, Heart, Flame, Volume2, ArrowRight } from 'lucide-react';
-// @ts-ignore
-import couple1Img from '@/assets/.aistudio/couple1.jpeg';
-// @ts-ignore
-import couple2Img from '@/assets/.aistudio/couple2.jpeg';
+
+const couple1Img = '/assets/img/couple1.jpeg';
+const couple2Img = '/assets/img/couple2.jpeg';
 
 interface WelcomeOverlayProps {
   onEnter: (selectedLang: 'en' | 'hi' | 'mix') => void;
@@ -20,13 +19,15 @@ export default function WelcomeOverlay({ onEnter }: WelcomeOverlayProps) {
   const [activePhoto, setActivePhoto] = useState<1 | 2>(1);
   const [photoError1, setPhotoError1] = useState(false);
   const [photoError2, setPhotoError2] = useState(false);
+  const [image1Loaded, setImage1Loaded] = useState(false);
+  const [image2Loaded, setImage2Loaded] = useState(false);
 
   // Cycle the couple's welcoming photos to simulate welcoming movement
   useEffect(() => {
     if (phase === 'welcome-couple') {
       const interval = setInterval(() => {
         setActivePhoto(prev => (prev === 1 ? 2 : 1));
-      }, 1800);
+      }, 6000);
       return () => clearInterval(interval);
     }
   }, [phase]);
@@ -417,9 +418,9 @@ export default function WelcomeOverlay({ onEnter }: WelcomeOverlayProps) {
             {phase === 'welcome-couple' && (
               <motion.div
                 key="welcome-couple-phase"
-                initial={{ opacity: 0, scale: 0.95 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{ duration: 1.2, ease: "easeOut" }}
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ duration: 0.4 }}
                 className="w-full flex flex-col items-center gap-4 relative"
               >
                 {/* Tiny Blessed Ganesha at top center as protector */}
@@ -462,26 +463,23 @@ export default function WelcomeOverlay({ onEnter }: WelcomeOverlayProps) {
                       {activePhoto === 1 ? (
                         <motion.div
                           key="photo1"
-                          initial={{ opacity: 0, scale: 0.96 }}
-                          animate={{ 
-                            opacity: 1, 
-                            scale: 1,
-                            y: [0, -4, 0],
-                            rotate: [0, -0.5, 0.5, 0]
-                          }}
-                          exit={{ opacity: 0, scale: 1.02 }}
-                          transition={{ 
-                            opacity: { duration: 0.7 },
-                            scale: { duration: 0.7 },
-                            y: { repeat: Infinity, duration: 3, ease: "easeInOut" },
-                            rotate: { repeat: Infinity, duration: 4, ease: "easeInOut" }
-                          }}
+                          initial={{ opacity: 0 }}
+                          animate={{ opacity: 1 }}
+                          exit={{ opacity: 0 }}
+                          transition={{ duration: 0.2 }}
                           className="absolute inset-0 w-full h-full"
                         >
+                          {!image1Loaded && !photoError1 && (
+                            <div className="absolute inset-0 flex flex-col items-center justify-center bg-[#240307] z-30">
+                              <div className="w-8 h-8 border-4 border-t-bright-gold border-bright-gold/20 rounded-full animate-spin mb-2" />
+                              <span className="text-[10px] text-bright-gold/80 font-wedding-devanagari tracking-wider">शुभ पावन क्षण लोड हो रहे हैं...</span>
+                            </div>
+                          )}
                           {!photoError1 ? (
                             <img
                               src={couple1Img}
                               alt="Rajesh & Anchal Welcoming"
+                              onLoad={() => setImage1Loaded(true)}
                               onError={() => setPhotoError1(true)}
                               className="w-full h-full object-cover rounded-t-full"
                               referrerPolicy="no-referrer"
@@ -494,26 +492,23 @@ export default function WelcomeOverlay({ onEnter }: WelcomeOverlayProps) {
                         /* PHOTO 2: With Garlands & Stoles (Auspicious Welcome) */
                         <motion.div
                           key="photo2"
-                          initial={{ opacity: 0, scale: 0.96 }}
-                          animate={{ 
-                            opacity: 1, 
-                            scale: 1,
-                            y: [0, -4, 0],
-                            rotate: [0, 0.5, -0.5, 0]
-                          }}
-                          exit={{ opacity: 0, scale: 1.02 }}
-                          transition={{ 
-                            opacity: { duration: 0.7 },
-                            scale: { duration: 0.7 },
-                            y: { repeat: Infinity, duration: 3, ease: "easeInOut" },
-                            rotate: { repeat: Infinity, duration: 4, ease: "easeInOut" }
-                          }}
+                          initial={{ opacity: 0 }}
+                          animate={{ opacity: 1 }}
+                          exit={{ opacity: 0 }}
+                          transition={{ duration: 0.2 }}
                           className="absolute inset-0 w-full h-full"
                         >
+                          {!image2Loaded && !photoError2 && (
+                            <div className="absolute inset-0 flex flex-col items-center justify-center bg-[#240307] z-30">
+                              <div className="w-8 h-8 border-4 border-t-bright-gold border-bright-gold/20 rounded-full animate-spin mb-2" />
+                              <span className="text-[10px] text-bright-gold/80 font-wedding-devanagari tracking-wider">शुभ पावन क्षण लोड हो रहे हैं...</span>
+                            </div>
+                          )}
                           {!photoError2 ? (
                             <img
                               src={couple2Img}
                               alt="Rajesh & Anchal Garland Greeting"
+                              onLoad={() => setImage2Loaded(true)}
                               onError={() => setPhotoError2(true)}
                               className="w-full h-full object-cover rounded-t-full"
                               referrerPolicy="no-referrer"
@@ -605,107 +600,28 @@ function CoupleIllustrationFallback({ type }: { type: 'normal' | 'garland' }) {
       {/* Radiant golden sunburst background */}
       <div className="absolute w-44 h-44 rounded-full bg-bright-gold/10 filter blur-xl animate-pulse" />
 
-      <svg viewBox="0 0 200 240" className="w-[85%] h-auto max-h-[280px] drop-shadow-[0_8px_16px_rgba(0,0,0,0.5)]">
-        {/* Halo background */}
-        <circle cx="100" cy="100" r="45" fill="none" stroke="#D4AF37" strokeWidth="0.5" strokeDasharray="3,3" className="animate-spin-slow" />
-        <circle cx="100" cy="100" r="42" fill="rgba(212, 175, 55, 0.05)" />
+      <div className="flex justify-center items-center gap-3 sm:gap-6 mt-4 relative z-10">
+        <img
+          src="/assets/img/couple1.jpeg"
+          alt="Bride"
+          className="w-24 h-24 sm:w-32 sm:h-32 md:w-36 md:h-36 rounded-full object-cover border-4 border-yellow-500 shadow-lg"
+        />
 
-        {/* BRIDE (Right side of viewer, Left of groom) */}
-        <g transform="translate(15, 10)">
-          {/* Hair / Dupatta */}
-          <path d="M110,65 C95,50 145,50 130,65 C125,80 140,110 130,130 L115,130" fill="#a01a24" stroke="#D4AF37" strokeWidth="0.5" />
-          <circle cx="120" cy="62" r="3.5" fill="#D4AF37" /> {/* Maang Tikka */}
-          <circle cx="120" cy="58" r="1.2" fill="#FF5722" />
+        <img
+          src="/assets/img/couple2.jpeg"
+          alt="Groom"
+          className="w-24 h-24 sm:w-32 sm:h-32 md:w-36 md:h-36 rounded-full object-cover border-4 border-yellow-500 shadow-lg"
+        />
+      </div>
 
-          {/* Saree/Lehenga Drape */}
-          <path d="M100,105 C110,105 135,115 140,155 L105,155 Z" fill="#b91c1c" />
-          {/* Golden borders */}
-          <path d="M115,110 Q125,125 138,155" fill="none" stroke="#FFD700" strokeWidth="1.5" />
-          <path d="M100,112 Q112,130 120,155" fill="none" stroke="#FFD700" strokeWidth="1" />
-
-          {/* Head & Neck */}
-          <circle cx="120" cy="74" r="11" fill="#fcd34d" className="opacity-95" />
-          <path d="M117,85 L123,85 L121,92 L119,92 Z" fill="#fbcfe8" /> {/* Neck */}
-
-          {/* Bindi and ornaments */}
-          <circle cx="118" cy="71" r="1" fill="#b91c1c" />
-          <path d="M115,86 Q120,89 125,86" fill="none" stroke="#FFD700" strokeWidth="1" /> {/* Necklace */}
-
-          {/* Hands doing Namaste */}
-          <path d="M103,115 Q108,102 113,115" fill="#fcd34d" stroke="#b91c1c" strokeWidth="0.5" />
-        </g>
-
-        {/* GROOM (Left side of viewer, Right of bride) */}
-        <g transform="translate(-15, 10)">
-          {/* Traditional Pagri/Turban */}
-          <path d="M65,58 C55,54 95,54 85,58 L88,68 L62,68 Z" fill="#dc2626" stroke="#D4AF37" strokeWidth="0.75" />
-          <path d="M75,54 L75,44 Q77,46 75,50" fill="none" stroke="#FFD700" strokeWidth="1.5" /> {/* Feather ornament */}
-          <circle cx="75" cy="58" r="2" fill="#FFD700" />
-
-          {/* Sherwani Body (Royal Ivory Cream) */}
-          <path d="M50,105 C55,105 90,105 90,155 L55,155 Z" fill="#fdfbf7" />
-          {/* Crimson Red Stole/Sash over shoulder */}
-          <path d="M53,105 C55,120 62,140 56,155" fill="none" stroke="#b91c1c" strokeWidth="4.5" strokeLinecap="round" />
-          <path d="M53,105 C55,120 62,140 56,155" fill="none" stroke="#FFD700" strokeWidth="1" strokeDasharray="2,2" />
-          
-          {/* Sherwani collar & golden elements */}
-          <path d="M71,105 L71,155" stroke="#FFD700" strokeWidth="1.5" />
-          {/* Golden buttons */}
-          <circle cx="71" cy="115" r="1.5" fill="#FFD700" />
-          <circle cx="71" cy="125" r="1.5" fill="#FFD700" />
-          <circle cx="71" cy="135" r="1.5" fill="#FFD700" />
-
-          {/* Head & Neck */}
-          <circle cx="75" cy="76" r="11.5" fill="#fcd34d" />
-          <path d="M72,87 L78,87 L76,94 L74,94 Z" fill="#fcd34d" />
-
-          {/* Traditional Tilak */}
-          <line x1="75" y1="69" x2="75" y2="74" stroke="#dc2626" strokeWidth="1.5" />
-
-          {/* Hands doing Namaste */}
-          <path d="M87,115 Q92,102 97,115" fill="#fcd34d" stroke="#b91c1c" strokeWidth="0.5" />
-        </g>
-
-        {/* JOINT NAMASTE HANDS (CENTERED) */}
-        <g transform="translate(100, 118)" className="animate-bounce" style={{ transformOrigin: 'center center' }}>
-          {/* Groom's left hand & Bride's right hand together in prayer/namaste gesture */}
-          <path d="M-6,0 Q0,-18 6,0 L4,12 L-4,12 Z" fill="#fcd34d" stroke="#AA7C11" strokeWidth="1" />
-          <line x1="0" y1="-14" x2="0" y2="10" stroke="#AA7C11" strokeWidth="0.5" strokeDasharray="1,1" />
-          {/* Henna detail on bride's hand side */}
-          <circle cx="2" cy="1" r="1" fill="#dc2626" />
-          <circle cx="2" cy="5" r="1" fill="#dc2626" />
-        </g>
-
-        {/* EXTRA AUSPICIOUS GARLANDS (SHOWN IN GARLAND TYPE) */}
-        {type === 'garland' && (
-          <g className="animate-pulse">
-            {/* Groom Garland */}
-            <path d="M50,96 Q75,145 100,96" fill="none" stroke="#FBBF24" strokeWidth="4.5" strokeLinecap="round" opacity="0.95" />
-            <path d="M50,96 Q75,145 100,96" fill="none" stroke="#EA580C" strokeWidth="1.5" strokeLinecap="round" strokeDasharray="3, 4" />
-
-            {/* Bride Garland */}
-            <path d="M100,96 Q125,145 150,96" fill="none" stroke="#FBBF24" strokeWidth="4.5" strokeLinecap="round" opacity="0.95" />
-            <path d="M100,96 Q125,145 150,96" fill="none" stroke="#EA580C" strokeWidth="1.5" strokeLinecap="round" strokeDasharray="3, 4" />
-            
-            {/* Hanging flowers */}
-            <circle cx="75" cy="120" r="2.5" fill="#EA580C" />
-            <circle cx="125" cy="120" r="2.5" fill="#EA580C" />
-          </g>
-        )}
-
-        {/* Small rising hearts for welcoming vibe */}
-        <g>
-          <path d="M96,65 Q93,60 90,65 L90,66 L96,72 L102,66 L102,65 Q99,60 96,65 Z" fill="#dc2626" className="animate-ping" style={{ transformOrigin: '96px 65px' }} />
-          <path d="M104,50 Q101,45 98,50 L98,51 L104,57 L110,51 L110,50 Q107,45 104,50 Z" fill="#f59e0b" className="animate-bounce" />
-        </g>
-      </svg>
-
-      <p className="text-royal-gold font-wedding-devanagari text-[10px] tracking-widest mt-2 animate-pulse">
-        {type === 'garland' ? 'वर-वधू स्वागत मुद्रा में' : 'मंगलाचरण की पावन बेला'}
+      <p className="text-royal-gold font-wedding-devanagari text-[10px] tracking-widest mt-4 animate-pulse relative z-10">
+        {type === "garland"
+          ? "वर-वधू स्वागत मुद्रा में"
+          : "मंगलाचरण की पावन बेला"}
       </p>
       
-      <p className="text-gray-400 font-mono text-[9px] max-w-[200px] mt-1 leading-normal leading-snug">
-        [To use your real photos, upload <span className="text-bright-gold">couple1.jpeg</span> and <span className="text-bright-gold">couple2.jpeg</span> in the <span className="text-white font-bold">assets/.aistudio/</span> folder]
+      <p className="text-gray-400 font-mono text-[9px] max-w-[200px] mt-2 leading-normal leading-snug relative z-10">
+        [To use your real photos, upload <span className="text-bright-gold">couple1.jpeg</span> and <span className="text-bright-gold">couple2.jpeg</span> in the <span className="text-white font-bold">assets/img/</span> folder]
       </p>
     </div>
   );

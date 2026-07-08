@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { Heart, Sparkles, Star, User, BookOpen, Briefcase, MapPin, Users, Phone, ShieldCheck } from 'lucide-react';
+import { Heart, Sparkles, Star, User, MapPin, Users, Phone, ShieldCheck } from 'lucide-react';
 
 interface WeddingCardProps {
   lang?: 'en' | 'hi' | 'mix';
@@ -359,18 +359,6 @@ export default function WeddingCard({ lang = 'mix' }: WeddingCardProps) {
                     </div>
                   </div>
 
-                  {/* Education / Occupation */}
-                  <div className="bg-white rounded-xl p-3 md:p-4 border border-royal-gold/15 shadow-sm space-y-2.5">
-                    <h6 className="font-bold text-saffron flex items-center gap-1.5 mb-1 text-xs uppercase tracking-wide">
-                      <BookOpen className="w-4 h-4" /> {lang === 'en' ? 'Education & Profession' : lang === 'mix' ? 'शिक्षा एवं व्यवसाय (Education & Career)' : 'शिक्षा एवं व्यवसाय'}
-                    </h6>
-                    <div className="grid grid-cols-1 sm:grid-cols-12 gap-1">
-                      <div className="col-span-1 sm:col-span-4 text-gray-400 font-medium">{lang === 'en' ? 'Education' : lang === 'mix' ? 'योग्यता (Education)' : 'योग्यता'}</div>
-                      <div className="col-span-1 sm:col-span-8 text-wedding-maroon font-semibold">
-                        {lang === 'en' ? 'M.Sc. Chemistry' : lang === 'mix' ? 'एम.एससी (केमिस्ट्री) / M.Sc. Chemistry' : 'एम.एससी (केमिस्ट्री)'}
-                      </div>
-                    </div>
-                  </div>
 
                   {/* Family details */}
                   <div className="bg-white rounded-xl p-3 md:p-4 border border-royal-gold/15 shadow-sm space-y-2.5">
@@ -392,8 +380,8 @@ export default function WeddingCard({ lang = 'mix' }: WeddingCardProps) {
                     <div className="grid grid-cols-1 sm:grid-cols-12 border-b border-gray-100 pb-2 gap-1">
                       <div className="col-span-1 sm:col-span-4 text-gray-400 font-medium">{lang === 'en' ? 'Siblings' : lang === 'mix' ? 'भाई-बहन (Siblings)' : 'भाई-बहन'}</div>
                       <div className="col-span-1 sm:col-span-8 text-wedding-maroon font-semibold space-y-1">
-                        <div>• Radhika Soni <span className="text-gray-500 text-xs">{lang === 'mix' ? '(Elder Sister / बड़ी बहन - Pursuing MBA in London, UK)' : '(Elder Sister - Pursuing MBA in London, UK)'}</span></div>
-                        <div>• Kanaiya Soni <span className="text-gray-500 text-xs">{lang === 'mix' ? '(Younger Brother / छोटा भाई - B.E. in CSE, Completed)' : '(Younger Brother - B.E. in CSE, Completed)'}</span></div>
+                        <div>• Radhika Soni <span className="text-gray-500 text-xs">{lang === 'mix' ? '(Elder Sister / बड़ी बहन)' : '(Elder Sister)'}</span></div>
+                        <div>• Kanaiya Soni <span className="text-gray-500 text-xs">{lang === 'mix' ? '(Younger Brother / छोटा भाई)' : '(Younger Brother)'}</span></div>
                       </div>
                     </div>
                     <div className="grid grid-cols-1 sm:grid-cols-12 pb-2 border-b border-gray-100 gap-1">
@@ -428,18 +416,6 @@ export default function WeddingCard({ lang = 'mix' }: WeddingCardProps) {
                     </div>
                   </div>
 
-                  {/* Education / Occupation */}
-                  <div className="bg-white rounded-xl p-3 md:p-4 border border-royal-gold/15 shadow-sm space-y-2.5">
-                    <h6 className="font-bold text-saffron flex items-center gap-1.5 mb-1 text-xs uppercase tracking-wide">
-                      <BookOpen className="w-4 h-4" /> {lang === 'en' ? 'Education' : lang === 'mix' ? 'शैक्षणिक विवरण (Education)' : 'शैक्षणिक विवरण'}
-                    </h6>
-                    <div className="grid grid-cols-1 sm:grid-cols-12 gap-1">
-                      <div className="col-span-1 sm:col-span-4 text-gray-400 font-medium">{lang === 'en' ? 'Degree' : lang === 'mix' ? 'स्नातक (Degree)' : 'स्नातक'}</div>
-                      <div className="col-span-1 sm:col-span-8 text-wedding-maroon font-semibold">
-                        B.Sc. (ZCB - Zoology, Chemistry, Botany)
-                      </div>
-                    </div>
-                  </div>
 
                   {/* Family details */}
                   <div className="bg-white rounded-xl p-3 md:p-4 border border-royal-gold/15 shadow-sm space-y-2.5">
