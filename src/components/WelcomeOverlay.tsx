@@ -2,8 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { Sparkles, Heart, Flame, Volume2, ArrowRight } from 'lucide-react';
 
-import couple1Img from '@/public/assets/img/couple1.jpg';
-import couple2Img from '@/public/assets/img/couple2.jpg';
+const couple1Img = '/assets/img/couple1.jpg';
+const couple2Img = '/assets/img/couple2.jpg';
 
 interface WelcomeOverlayProps {
   onEnter: (selectedLang: 'en' | 'hi' | 'mix') => void;
@@ -21,19 +21,6 @@ export default function WelcomeOverlay({ onEnter }: WelcomeOverlayProps) {
   const [photoError2, setPhotoError2] = useState(false);
   const [image1Loaded, setImage1Loaded] = useState(false);
   const [image2Loaded, setImage2Loaded] = useState(false);
-
-  // Preload couple images for instantaneous and ultra-smooth transition
-  useEffect(() => {
-    const img1 = new Image();
-    img1.src = couple1Img;
-    img1.onload = () => setImage1Loaded(true);
-    img1.onerror = () => setPhotoError1(true);
-
-    const img2 = new Image();
-    img2.src = couple2Img;
-    img2.onload = () => setImage2Loaded(true);
-    img2.onerror = () => setPhotoError2(true);
-  }, []);
 
   // Cycle the couple's welcoming photos to simulate welcoming movement
   useEffect(() => {

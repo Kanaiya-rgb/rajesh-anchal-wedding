@@ -16,6 +16,17 @@ interface BurstParticle {
   flutterSpeed: number;
 }
 
+interface BurstRing {
+  x: number;
+  y: number;
+  radius: number;
+  maxRadius: number;
+  color: string;
+  opacity: number;
+  speed: number;
+  type: 'gold' | 'rose' | 'saffron';
+}
+
 export default function PetalAnimation() {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
 
@@ -95,6 +106,7 @@ export default function PetalAnimation() {
 
     // Active burst particle array
     const burstParticles: BurstParticle[] = [];
+    const burstRings: BurstRing[] = [];
     const gravity = 0.18; // Slightly lower gravity for smoother, slower float
 
     // Handle the custom "shubh-burst" celebration trigger
@@ -104,6 +116,64 @@ export default function PetalAnimation() {
       const centerParticles = isMobile ? 35 : 70;
 
       const goldColors = ['#FFDF00', '#D4AF37', '#FFC000', '#AA7C11'];
+
+      // Add multiple celebratory shockwave rings from center sky & cannons
+      burstRings.push({
+        x: width / 2,
+        y: height * 0.45,
+        radius: 5,
+        maxRadius: isMobile ? 150 : 300,
+        color: '#FFDF00', // Gold Shockwave
+        opacity: 0.95,
+        speed: isMobile ? 5 : 8,
+        type: 'gold'
+      });
+      
+      burstRings.push({
+        x: width / 2,
+        y: height * 0.45,
+        radius: 10,
+        maxRadius: isMobile ? 130 : 260,
+        color: '#D21F3C', // Deep Crimson Shockwave
+        opacity: 0.8,
+        speed: isMobile ? 4 : 6,
+        type: 'rose'
+      });
+
+      burstRings.push({
+        x: width / 2,
+        y: height * 0.45,
+        radius: 15,
+        maxRadius: isMobile ? 100 : 210,
+        color: '#FF9933', // Saffron Shockwave
+        opacity: 0.7,
+        speed: isMobile ? 3 : 4.5,
+        type: 'saffron'
+      });
+
+      // Left Cannon blast ring
+      burstRings.push({
+        x: 0,
+        y: height,
+        radius: 5,
+        maxRadius: isMobile ? 140 : 280,
+        color: '#D4AF37',
+        opacity: 0.85,
+        speed: isMobile ? 6 : 9,
+        type: 'gold'
+      });
+
+      // Right Cannon blast ring
+      burstRings.push({
+        x: width,
+        y: height,
+        radius: 5,
+        maxRadius: isMobile ? 140 : 280,
+        color: '#D4AF37',
+        opacity: 0.85,
+        speed: isMobile ? 6 : 9,
+        type: 'gold'
+      });
 
       // Left Cannon (blasts from bottom-left corner diagonally up-right)
       for (let i = 0; i < cannonParticles; i++) {
@@ -374,6 +444,55 @@ export default function PetalAnimation() {
           ctx.shadowBlur = 8;
         }
 
+        ctx.restore();
+      }
+
+      // 3. Draw active celebratory shockwave burst rings
+      for (let i = burstRings.length - 1; i >= 0; i--) {
+        const ring = burstRings[i];
+        ring.radius += ring.speed;
+        
+        // Linear fadeout as radius expands
+        ring.opacity = 1 - (ring.radius / ring.maxRadius);
+
+        if (ring.radius >= ring.maxRadius || ring.opacity <= 0) {
+          burstRings.splice(i, 1);
+          continue;
+        }
+
+        ctx.save();
+        ctx.strokeStyle = ring.color;
+        ctx.lineWidth = (ring.type === 'gold' ? 4 : 2.5) * ring.opacity;
+        ctx.globalAlpha = ring.opacity;
+        ctx.shadowColor = ring.color;
+        ctx.shadowBlur = 15;
+        
+        // Draw the expanding ring
+        ctx.beginPath();
+        ctx.arc(ring.x, ring.y, ring.radius, 0, Math.PI * 2);
+        ctx.stroke();
+
+        // Draw radiating sparkle flares on the gold ring
+        if (ring.type === 'gold') {
+          const numFlares = 8;
+          ctx.fillStyle = '#FFFFFF';
+          ctx.shadowBlur = 8;
+          ctx.shadowColor = '#FFFFFF';
+          for (let j = 0; j < numFlares; j++) {
+            const flareAngle = (j * Math.PI * 2) / numFlares + (ring.radius * 0.005);
+            const flareX = ring.x + Math.cos(flareAngle) * ring.radius;
+            const flareY = ring.y + Math.sin(flareAngle) * ring.radius;
+            
+            // Draw tiny diamonds at the flare points
+            ctx.beginPath();
+            ctx.moveTo(flareX, flareY - 4);
+            ctx.lineTo(flareX + 4, flareY);
+            ctx.lineTo(flareX, flareY + 4);
+            ctx.lineTo(flareX - 4, flareY);
+            ctx.closePath();
+            ctx.fill();
+          }
+        }
         ctx.restore();
       }
 

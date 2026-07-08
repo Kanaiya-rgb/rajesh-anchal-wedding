@@ -98,6 +98,7 @@ export default function RsvpForm({ lang = 'hi' }: RsvpFormProps) {
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [fieldErrors, setFieldErrors] = useState<{ fullName?: string; guestsCount?: string }>({});
 
   const ceremonyOptions = lang === 'en' ? ceremonyOptionsEn : lang === 'mix' ? ceremonyOptionsMix : ceremonyOptionsHi;
 
@@ -110,12 +111,90 @@ export default function RsvpForm({ lang = 'hi' }: RsvpFormProps) {
     });
   };
 
+  const validateForm = () => {
+    const errors: { fullName?: string; guestsCount?: string } = {};
+
+    // 1. Full Name Validation
+    const trimmedName = formData.fullName.trim();
+    if (!trimmedName) {
+      errors.fullName = lang === 'en' 
+        ? 'Please provide your auspicious name.' 
+        : lang === 'mix' 
+          ? 'कृपया अपना शुभ नाम दर्ज करें (Please enter your name)' 
+          : 'कृपया अपना शुभ नाम दर्ज करें।';
+    } else if (trimmedName.length < 3) {
+      errors.fullName = lang === 'en'
+        ? 'Your auspicious name should be at least 3 characters long.'
+        : lang === 'mix'
+          ? 'आपका शुभ नाम कम से कम 3 अक्षरों का होना चाहिए (Name must be at least 3 chars)'
+          : 'आपका शुभ नाम कम से कम 3 अक्षरों का होना चाहिए।';
+    } else if (/^[0-9!@#$%^&*()_+={}\[\]:;"'<>,.?/|\\~`]+$/.test(trimmedName)) {
+      errors.fullName = lang === 'en'
+        ? 'Please enter a valid name (letters and spaces only).'
+        : lang === 'mix'
+          ? 'कृपया एक सही नाम दर्ज करें (Letters only)'
+          : 'कृपया एक सही नाम दर्ज करें (अक्षरों का प्रयोग करें)।';
+    }
+
+    // 2. Guests Count Validation
+    const count = Number(formData.guestsCount);
+    if (isNaN(count) || count < 1) {
+      errors.guestsCount = lang === 'en'
+        ? 'Total guests must be at least 1.'
+        : lang === 'mix'
+          ? 'अतिथियों की संख्या कम से कम 1 होनी चाहिए (Guests must be at least 1)'
+          : 'अतिथियों की संख्या कम से कम 1 होनी चाहिए।';
+    } else if (count > 15) {
+      errors.guestsCount = lang === 'en'
+        ? 'Maximum allowed guests is 15.'
+        : lang === 'mix'
+          ? 'अतिथियों की अधिकतम सीमा 15 है (Max 15 guests)'
+          : 'अतिथियों की अधिकतम संख्या 15 ही हो सकती है।';
+    } else if (!Number.isInteger(count)) {
+      errors.guestsCount = lang === 'en'
+        ? 'Guests count must be a whole number.'
+        : lang === 'mix'
+          ? 'संख्या एक पूर्णांक होनी चाहिए (Must be a whole number)'
+          : 'अतिथियों की संख्या पूर्णांक होनी चाहिए।';
+    }
+
+    setFieldErrors(errors);
+    return Object.keys(errors).length === 0;
+  };
+
+  const handleNameChange = (val: string) => {
+    setFormData(prev => ({ ...prev, fullName: val }));
+    if (fieldErrors.fullName) {
+      setFieldErrors(prev => ({ ...prev, fullName: undefined }));
+    }
+  };
+
+  const handleGuestsChange = (val: string) => {
+    // Keep it as a raw string or empty while typing so users can backspace easily,
+    // but validate and parse it correctly.
+    const num = val === '' ? '' : Number(val);
+    setFormData(prev => ({ ...prev, guestsCount: num as any }));
+    if (fieldErrors.guestsCount) {
+      setFieldErrors(prev => ({ ...prev, guestsCount: undefined }));
+    }
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!formData.fullName.trim()) {
-      setError(lang === 'en' ? 'Please provide your auspicious name.' : lang === 'mix' ? 'कृपया अपना शुभ नाम दर्ज करें (Please enter your name)' : 'कृपया अपना शुभ नाम दर्ज करें।');
+    
+    // Validate fields first
+    const isValid = validateForm();
+    if (!isValid) {
+      setError(
+        lang === 'en' 
+          ? 'Please correct the highlighted validation errors.' 
+          : lang === 'mix'
+            ? 'कृपया नीचे दिए गए त्रुटि संदेशों को सुधारें (Please fix the errors below)'
+            : 'कृपया नीचे दिए गए लाल रंग के त्रुटि संदेशों को सुधारें।'
+      );
       return;
     }
+
     if (formData.attendingEvents.length === 0) {
       setError(
         lang === 'en' 
@@ -129,6 +208,7 @@ export default function RsvpForm({ lang = 'hi' }: RsvpFormProps) {
 
     setLoading(true);
     setError(null);
+    setFieldErrors({});
 
     try {
       const rsvpData: RSVP = {
@@ -228,7 +308,11 @@ export default function RsvpForm({ lang = 'hi' }: RsvpFormProps) {
             scale: { repeat: Infinity, duration: 2.2, ease: "easeInOut" },
             default: { duration: 0.2 }
           }}
-          onClick={() => setIsModalOpen(true)}
+          onClick={() => {
+            setFieldErrors({});
+            setError(null);
+            setIsModalOpen(true);
+          }}
           className="px-8 py-4 bg-gradient-to-r from-wedding-crimson via-wedding-maroon to-wedding-crimson hover:from-wedding-maroon hover:to-wedding-crimson text-bright-gold font-bold font-wedding-display text-xs md:text-sm uppercase tracking-widest rounded-full border-2 border-royal-gold shadow-lg cursor-pointer flex items-center justify-center gap-2.5 mx-auto relative overflow-hidden group"
         >
           <span className="absolute inset-0 bg-white/15 -translate-x-full group-hover:translate-x-full transition-transform duration-1000 ease-out" />
@@ -436,9 +520,25 @@ export default function RsvpForm({ lang = 'hi' }: RsvpFormProps) {
                         required
                         placeholder={lang === 'en' ? 'Enter your full name' : lang === 'mix' ? 'अपना शुभ नाम दर्ज करें (Enter full name)' : 'अपना शुभ नाम दर्ज करें'}
                         value={formData.fullName}
-                        onChange={(e) => setFormData({ ...formData, fullName: e.target.value })}
-                        className="w-full px-4 py-2.5 rounded-xl border border-gray-200 focus:border-royal-gold focus:ring-2 focus:ring-royal-gold/20 outline-none text-xs md:text-sm transition-all duration-200"
+                        onChange={(e) => handleNameChange(e.target.value)}
+                        className={`w-full px-4 py-2.5 rounded-xl border outline-none text-xs md:text-sm transition-all duration-200 ${
+                          fieldErrors.fullName 
+                            ? 'border-red-500 focus:border-red-500 focus:ring-2 focus:ring-red-100' 
+                            : 'border-gray-200 focus:border-royal-gold focus:ring-2 focus:ring-royal-gold/20'
+                        }`}
                       />
+                      <AnimatePresence>
+                        {fieldErrors.fullName && (
+                          <motion.p
+                            initial={{ opacity: 0, y: -5 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            exit={{ opacity: 0, y: -5 }}
+                            className="text-red-600 text-[11px] font-semibold mt-1"
+                          >
+                            {fieldErrors.fullName}
+                          </motion.p>
+                        )}
+                      </AnimatePresence>
                     </div>
 
                     {/* Contact Info */}
@@ -504,9 +604,25 @@ export default function RsvpForm({ lang = 'hi' }: RsvpFormProps) {
                           max="15"
                           required
                           value={formData.guestsCount}
-                          onChange={(e) => setFormData({ ...formData, guestsCount: Number(e.target.value) })}
-                          className="w-full px-4 py-2.5 rounded-xl border border-gray-200 focus:border-royal-gold focus:ring-2 focus:ring-royal-gold/20 outline-none text-xs md:text-sm transition-all duration-200"
+                          onChange={(e) => handleGuestsChange(e.target.value)}
+                          className={`w-full px-4 py-2.5 rounded-xl border outline-none text-xs md:text-sm transition-all duration-200 ${
+                            fieldErrors.guestsCount 
+                              ? 'border-red-500 focus:border-red-500 focus:ring-2 focus:ring-red-100' 
+                              : 'border-gray-200 focus:border-royal-gold focus:ring-2 focus:ring-royal-gold/20'
+                          }`}
                         />
+                        <AnimatePresence>
+                          {fieldErrors.guestsCount && (
+                            <motion.p
+                              initial={{ opacity: 0, y: -5 }}
+                              animate={{ opacity: 1, y: 0 }}
+                              exit={{ opacity: 0, y: -5 }}
+                              className="text-red-600 text-[11px] font-semibold mt-1"
+                            >
+                              {fieldErrors.guestsCount}
+                            </motion.p>
+                          )}
+                        </AnimatePresence>
                       </div>
 
                       <div>

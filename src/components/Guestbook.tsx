@@ -104,7 +104,36 @@ export default function Guestbook({ lang = 'hi' }: GuestbookProps) {
   };
 
   return (
-    <div className="py-8 px-2 max-w-5xl mx-auto">
+    <div className="py-8 px-2 max-w-5xl mx-auto relative overflow-hidden">
+      {/* Traditional Swastika Background Watermark for Guestbook */}
+      <div className="absolute left-1 sm:left-4 bottom-16 opacity-[0.08] sm:opacity-[0.06] text-wedding-maroon pointer-events-none w-14 h-14 sm:w-24 sm:h-24 md:w-28 md:h-28 z-0">
+        <svg viewBox="0 0 100 100" className="w-full h-full" fill="none" stroke="currentColor" strokeWidth="3.5" strokeLinecap="round" strokeLinejoin="round">
+          <path d="M50 20 L50 80" />
+          <path d="M20 50 L80 50" />
+          <path d="M50 20 L80 20" />
+          <path d="M50 80 L20 80" />
+          <path d="M20 50 L20 20" />
+          <path d="M80 50 L80 80" />
+          <circle cx="35" cy="35" r="4" fill="currentColor" stroke="none" />
+          <circle cx="65" cy="35" r="4" fill="currentColor" stroke="none" />
+          <circle cx="35" cy="65" r="4" fill="currentColor" stroke="none" />
+          <circle cx="65" cy="65" r="4" fill="currentColor" stroke="none" />
+        </svg>
+      </div>
+
+      {/* Traditional Kalash Background Watermark for Guestbook */}
+      <div className="absolute right-1 sm:right-4 bottom-16 opacity-[0.08] sm:opacity-[0.06] text-wedding-maroon pointer-events-none w-16 h-16 sm:w-24 sm:h-24 md:w-28 md:h-28 z-0">
+        <svg viewBox="0 0 100 100" className="w-full h-full" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
+          <path d="M50 12 C50 12 44 20 44 25 C44 29 46.5 31 50 31 C53.5 31 56 29 56 25 C56 20 50 12 50 12 Z" fill="currentColor" />
+          <path d="M34 38 C41 35 47 30 50 24 C53 30 59 35 66 38" />
+          <path d="M39 38 C44 33 46 27 48 23 M61 38 C56 33 54 27 52 23" />
+          <path d="M37 38 L63 38" strokeWidth="3.5" />
+          <path d="M35 43 L65 43" strokeWidth="3.5" />
+          <path d="M36 43 C22 47 24 78 50 84 C76 78 78 47 64 43" strokeWidth="3" />
+          <path d="M45 62 L55 62 M50 57 L50 67 M45 57 L45 62 M55 62 L55 67 M50 57 L55 57 M45 67 L50 67" strokeWidth="1.5" />
+        </svg>
+      </div>
+
       <div className="text-center mb-8">
         <span className="text-saffron font-wedding-devanagari text-sm md:text-base tracking-widest block mb-1 font-bold">
           {lang === 'mix' ? '॥ मंगल आशीर्वाद (Guest Blessings) ॥' : lang === 'en' ? '॥ Guest Blessings ॥' : '॥ मंगल आशीर्वाद एवं शुभकामनाएं ॥'}

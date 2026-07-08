@@ -52,10 +52,39 @@ export default function WeddingCard({ lang = 'mix' }: WeddingCardProps) {
         <div className="absolute inset-2.5 sm:inset-3 border border-royal-gold/20 rounded-[18px] pointer-events-none" />
 
         {/* Top Sacred Kalash / Mandala Outline Watermark */}
-        <div className="absolute top-4 left-1/2 -translate-x-1/2 opacity-[0.03] w-48 h-48 pointer-events-none">
+        <div className="absolute top-4 left-1/2 -translate-x-1/2 opacity-[0.08] w-48 h-48 pointer-events-none">
           <svg viewBox="0 0 100 100" className="w-full h-full fill-wedding-maroon">
             <path d="M50 5 L62 25 Q50 35 38 25 Z M38 25 Q50 20 62 25 Q68 45 50 65 Q32 45 38 25" />
             <circle cx="50" cy="50" r="28" stroke="currentColor" strokeWidth="1" fill="none" />
+          </svg>
+        </div>
+
+        {/* Auspicious Left Swastika Watermark */}
+        <div className="absolute left-6 top-[20%] opacity-[0.08] sm:opacity-[0.06] w-20 h-20 sm:w-28 sm:h-28 md:w-36 md:h-36 text-wedding-crimson pointer-events-none z-0">
+          <svg viewBox="0 0 100 100" className="w-full h-full" fill="none" stroke="currentColor" strokeWidth="3.5" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M50 20 L50 80" />
+            <path d="M20 50 L80 50" />
+            <path d="M50 20 L80 20" />
+            <path d="M50 80 L20 80" />
+            <path d="M20 50 L20 20" />
+            <path d="M80 50 L80 80" />
+            <circle cx="35" cy="35" r="4" fill="currentColor" stroke="none" />
+            <circle cx="65" cy="35" r="4" fill="currentColor" stroke="none" />
+            <circle cx="35" cy="65" r="4" fill="currentColor" stroke="none" />
+            <circle cx="65" cy="65" r="4" fill="currentColor" stroke="none" />
+          </svg>
+        </div>
+
+        {/* Auspicious Right Kalash Watermark */}
+        <div className="absolute right-6 top-[20%] opacity-[0.08] sm:opacity-[0.06] w-20 h-20 sm:w-28 sm:h-28 md:w-36 md:h-36 text-wedding-crimson pointer-events-none z-0">
+          <svg viewBox="0 0 100 100" className="w-full h-full" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
+            <path d="M50 12 C50 12 44 20 44 25 C44 29 46.5 31 50 31 C53.5 31 56 29 56 25 C56 20 50 12 50 12 Z" fill="currentColor" />
+            <path d="M34 38 C41 35 47 30 50 24 C53 30 59 35 66 38" />
+            <path d="M39 38 C44 33 46 27 48 23 M61 38 C56 33 54 27 52 23" />
+            <path d="M37 38 L63 38" strokeWidth="3.5" />
+            <path d="M35 43 L65 43" strokeWidth="3.5" />
+            <path d="M36 43 C22 47 24 78 50 84 C76 78 78 47 64 43" strokeWidth="3" />
+            <path d="M45 62 L55 62 M50 57 L50 67 M45 57 L45 62 M55 62 L55 67 M50 57 L55 57 M45 67 L50 67" strokeWidth="1.5" />
           </svg>
         </div>
 
