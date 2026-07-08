@@ -503,7 +503,7 @@ export default function ShubhFireworks() {
                 <span className="relative inline-flex rounded-full h-2 w-2 bg-bright-gold"></span>
               </span>
               <span className="animate-pulse">✨</span>
-              <span>यहाँ क्लिक करें / Click Here!</span>
+              <span>Click Here!</span>
               <span className="text-xs">🎆</span>
               {/* Cute speech bubble pointer */}
               <div className="absolute -bottom-1.5 left-5 w-2.5 h-2.5 bg-wedding-maroon border-r-2 border-b-2 border-royal-gold rotate-45 transform" />
