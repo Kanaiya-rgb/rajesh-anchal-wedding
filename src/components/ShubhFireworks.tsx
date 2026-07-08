@@ -12,10 +12,10 @@ interface Particle {
   size: number;
   gravity: number;
   resistance: number;
-  history: { x: number; y: number }[];
-  isSpark: boolean; // Falling embers/sparks
+  isSpark: boolean;
   glowColor: string;
   twinkle: boolean;
+  trailLength: number;
 }
 
 interface Rocket {
@@ -30,7 +30,6 @@ interface Rocket {
   swayFreq: number;
   swayAmp: number;
   timeAlive: number;
-  history: { x: number; y: number }[];
 }
 
 interface TextBurst {
@@ -48,15 +47,15 @@ export default function ShubhFireworks() {
   const [isPlaying, setIsPlaying] = useState(false);
   const triggerDebounce = useRef(false);
   const activeIntervalRef = useRef<NodeJS.Timeout | null>(null);
-  
-  // High fidelity color palettes based on the user's image (Gold, Pink, Orange, Blue, White)
+
+  // Exquisite colors selected directly from the premium fireworks palette
   const palettes = [
-    { core: '#FFFFFF', outer: '#FFA500', glow: 'rgba(255, 165, 0, 0.6)' }, // Gold & White Chrysanthemum
-    { core: '#FFD700', outer: '#FF1493', glow: 'rgba(255, 20, 147, 0.6)' }, // Rani Pink & Gold
-    { core: '#00FFFF', outer: '#39FF14', glow: 'rgba(57, 255, 20, 0.6)' }, // Cyan & Neon Green
-    { core: '#FFFFFF', outer: '#FF4500', glow: 'rgba(255, 69, 0, 0.6)' }, // Saffron Red & White
-    { core: '#E0B0FF', outer: '#00FFFF', glow: 'rgba(0, 255, 255, 0.6)' }, // Turquoise & Lavender shimmer
-    { core: '#FFDF00', outer: '#FFFFFF', glow: 'rgba(255, 223, 0, 0.5)' }, // Pure Brocade Gold & Silver
+    { core: '#FFFFFF', outer: '#FFA500', glow: 'rgba(255, 165, 0, 0.7)' },  // Golden Chrysanthemum
+    { core: '#FFD700', outer: '#FF1493', glow: 'rgba(255, 20, 147, 0.7)' }, // Rani Pink Sparkle
+    { core: '#00FFFF', outer: '#39FF14', glow: 'rgba(57, 255, 20, 0.7)' },  // Neon Turquoise Green
+    { core: '#FFFFFF', outer: '#FF4500', glow: 'rgba(255, 69, 0, 0.7)' },   // Pure Saffron & Gold
+    { core: '#E2F6FF', outer: '#00D2FF', glow: 'rgba(0, 210, 255, 0.7)' },  // Electric Ice Blue
+    { core: '#FFDF00', outer: '#FFFFFF', glow: 'rgba(255, 255, 255, 0.6)' }, // Imperial Brocade Silver-Gold
   ];
 
   const blessingTexts = [
@@ -70,7 +69,7 @@ export default function ShubhFireworks() {
     'R & A ✨',
   ];
 
-  const launchBurstRef = useRef<(() => void) | null>(null);
+  const startCelebrationRef = useRef<(() => void) | null>(null);
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -93,7 +92,7 @@ export default function ShubhFireworks() {
     window.addEventListener('resize', resizeCanvas);
     resizeCanvas();
 
-    // 1. Launch a single rocket with a beautiful wavy/curved trail (like in the image)
+    // 1. Launch a single rocket with a beautiful wavy path
     const launchRocket = () => {
       if (!isPlaying) return;
       const startX = Math.random() * (canvas.width * 0.7) + canvas.width * 0.15;
@@ -102,7 +101,7 @@ export default function ShubhFireworks() {
       const targetY = Math.random() * (canvas.height * 0.45) + canvas.height * 0.1;
 
       const angle = Math.atan2(targetY - startY, targetX - startX);
-      const speed = Math.random() * 4 + 14;
+      const speed = Math.random() * 4 + 14; // High-velocity ascent
 
       rockets.push({
         x: startX,
@@ -111,58 +110,58 @@ export default function ShubhFireworks() {
         ty: targetY,
         vx: Math.cos(angle) * speed,
         vy: Math.sin(angle) * speed,
-        color: '#FFFFFF', // High-contrast initial spark
+        color: '#FFFFFF',
         alpha: 1,
-        swayFreq: Math.random() * 0.15 + 0.05,
-        swayAmp: Math.random() * 3 + 1.5,
+        swayFreq: Math.random() * 0.12 + 0.04,
+        swayAmp: Math.random() * 3.5 + 1.5,
         timeAlive: 0,
-        history: [],
       });
     };
 
-    // 2. Create high fidelity layered explosions matching the reference image
+    // 2. High fidelity multi-layered radial explosion (runs at solid 60 FPS without shadowBlur!)
     const explode = (x: number, y: number) => {
       const palette = palettes[Math.floor(Math.random() * palettes.length)];
       
-      // Select a stylized burst pattern type:
-      // 0 = Double Ring Peony, 1 = Golden Brocade Willow with crackle, 2 = Perfect Radial Ray Chrysanthemum
+      // Determine pattern (0 = Double Ring, 1 = Shimmering Willow, 2 = Dazzling Ray)
       const patternType = Math.floor(Math.random() * 3);
-      
-      const pCount = patternType === 0 ? 110 : patternType === 1 ? 80 : 130;
+      const pCount = patternType === 0 ? 100 : patternType === 1 ? 70 : 120;
 
       for (let i = 0; i < pCount; i++) {
-        // Base radial calculations
         const angle = (i / pCount) * Math.PI * 2 + (Math.random() - 0.5) * 0.15;
-        let speed = Math.random() * 6 + 3.5;
+        let speed = Math.random() * 5.5 + 3.5;
         let color = palette.outer;
-        let decay = Math.random() * 0.007 + 0.004; // Long trails
-        let resistance = 0.975;
+        let decay = Math.random() * 0.008 + 0.005; // Elegant slow decay
+        let resistance = 0.974;
         let gravity = 0.055;
         let isSpark = false;
+        let trailLength = Math.random() * 1.5 + 1.2;
 
         if (patternType === 0) {
-          // Double Ring: some outer particles, some inner core particles
+          // Double Ring
           if (i % 3 === 0) {
-            speed *= 0.55; // Inner ring
+            speed *= 0.55; // Inner core
             color = palette.core;
-            decay = Math.random() * 0.01 + 0.007;
+            decay = Math.random() * 0.012 + 0.008;
+            trailLength = 1.0;
           } else {
-            speed *= 1.15; // Outer ring
+            speed *= 1.15; // Outer expansion ring
           }
         } else if (patternType === 1) {
-          // Willow Brocade: particles slide down heavily under gravity, leaving shimmering trails
-          gravity = 0.095;
-          resistance = 0.96;
+          // Shimmering Willow
+          gravity = 0.09;
+          resistance = 0.965;
           decay = Math.random() * 0.006 + 0.003;
+          trailLength = Math.random() * 2.2 + 1.8;
           if (Math.random() > 0.6) {
-            isSpark = true; // Makes crackling sparks at the tips
+            isSpark = true;
             color = '#FFD700';
           }
         } else {
-          // Perfect Chrysanthemum with bright white ray nodes
+          // Dazzling Radial Ray
           if (i % 6 === 0) {
-            color = '#FFFFFF'; // White accents/centers
+            color = '#FFFFFF';
             speed *= 1.25;
+            trailLength = 2.4;
           }
         }
 
@@ -174,56 +173,57 @@ export default function ShubhFireworks() {
           alpha: 1,
           decay,
           color,
-          size: isSpark ? Math.random() * 1.5 + 0.8 : Math.random() * 3.2 + 1.6,
+          size: isSpark ? Math.random() * 1.2 + 0.6 : Math.random() * 2.8 + 1.4,
           gravity,
           resistance,
-          history: [],
           isSpark,
           glowColor: palette.glow,
           twinkle: Math.random() > 0.4,
+          trailLength,
         });
       }
 
-      // Add a central flash star (bright center node like in the photo)
-      const flashCount = 15;
+      // Add central white-hot flash sparks that expand and fade instantly
+      const flashCount = 12;
       for (let i = 0; i < flashCount; i++) {
         const a = Math.random() * Math.PI * 2;
-        const s = Math.random() * 1.8 + 0.5;
+        const s = Math.random() * 1.5 + 0.5;
         particles.push({
           x,
           y,
           vx: Math.cos(a) * s,
           vy: Math.sin(a) * s,
           alpha: 1,
-          decay: Math.random() * 0.04 + 0.02, // Fades quickly
+          decay: Math.random() * 0.045 + 0.025,
           color: '#FFFFFF',
-          size: Math.random() * 4 + 2,
+          size: Math.random() * 3.5 + 1.5,
           gravity: 0.02,
-          resistance: 0.95,
-          history: [],
+          resistance: 0.94,
           isSpark: false,
           glowColor: 'rgba(255,255,255,0.8)',
           twinkle: false,
+          trailLength: 1.0,
         });
       }
 
-      // Add elegant blessing text at the apex of the explosion
-      if (Math.random() > 0.3) {
+      // Add floating blessing text above the explosion apex
+      if (Math.random() > 0.35) {
         textBursts.push({
           id: textIdCounter++,
           x,
-          y: y - 35,
+          y: y - 30,
           text: blessingTexts[Math.floor(Math.random() * blessingTexts.length)],
           alpha: 1,
-          scale: 0.82,
+          scale: 0.85,
           color: palette.outer,
         });
       }
     };
 
-    // Main Canvas rendering loop
+    // Main Canvas render loop
     const render = () => {
-      // Semi-transparent overlay to keep smooth trailing, matching dark theme perfectly
+      // 1. Draw dark semi-transparent sky backdrop to create gorgeous smooth trails
+      ctx.globalCompositeOperation = 'source-over';
       ctx.fillStyle = 'rgba(10, 2, 7, 0.16)';
       ctx.fillRect(0, 0, canvas.width, canvas.height);
 
@@ -232,58 +232,59 @@ export default function ShubhFireworks() {
         return;
       }
 
-      // 1. Render Rockets with stylized wavy paths
+      // 2. Enable additive blending for glowing hot-centers and hyper-realistic sparks!
+      ctx.globalCompositeOperation = 'lighter';
+
+      // 2a. Update and render rockets with beautiful gold trailing embers
       for (let i = rockets.length - 1; i >= 0; i--) {
         const r = rockets[i];
         r.timeAlive += 1;
 
-        // Apply sinusoidal sway to trajectory for organic/stylized wave look (like the bottom of the photo)
+        // Apply sine sway for curved aesthetic trajectory
         const sway = Math.sin(r.timeAlive * r.swayFreq) * r.swayAmp;
         const perpX = -Math.sin(Math.atan2(r.vy, r.vx)) * sway;
         const perpY = Math.cos(Math.atan2(r.vy, r.vx)) * sway;
 
         r.x += r.vx + perpX * 0.08;
         r.y += r.vy + perpY * 0.08;
+        r.vy += 0.065; // gravity pull
 
-        // Gravity affects rocket peak
-        r.vy += 0.06;
+        // Spawn golden-orange magnesium sparks from rocket bottom
+        if (Math.random() > 0.32) {
+          particles.push({
+            x: r.x,
+            y: r.y,
+            vx: (Math.random() - 0.5) * 1.5,
+            vy: Math.random() * 1.8 + 1.2,
+            alpha: 0.85,
+            decay: Math.random() * 0.03 + 0.015,
+            color: '#FFA500',
+            size: Math.random() * 1.6 + 0.8,
+            gravity: 0.08,
+            resistance: 0.98,
+            isSpark: true,
+            glowColor: 'rgba(255, 165, 0, 0.4)',
+            twinkle: Math.random() > 0.4,
+            trailLength: 2.2,
+          });
+        }
 
-        r.history.push({ x: r.x, y: r.y });
-        if (r.history.length > 18) r.history.shift();
-
-        // Draw glowing tapered trail
+        // Draw elegant ascending comet head
         ctx.save();
         ctx.beginPath();
-        if (r.history.length > 1) {
-          ctx.moveTo(r.history[0].x, r.history[0].y);
-          for (let h = 1; h < r.history.length; h++) {
-            ctx.lineTo(r.history[h].x, r.history[h].y);
-          }
-        } else {
-          ctx.moveTo(r.x, r.y);
-        }
-        ctx.strokeStyle = 'rgba(255, 235, 180, 0.85)';
-        ctx.lineWidth = 2.4;
-        ctx.lineCap = 'round';
-        ctx.shadowColor = '#FFD700';
-        ctx.shadowBlur = 12;
-        ctx.stroke();
-
-        // Glowing apex indicator node
-        ctx.beginPath();
-        ctx.arc(r.x, r.y, 3, 0, Math.PI * 2);
+        ctx.arc(r.x, r.y, 3.2, 0, Math.PI * 2);
         ctx.fillStyle = '#FFFFFF';
         ctx.fill();
         ctx.restore();
 
-        // Apex explosion
+        // Check if rocket has reached peak height
         if (r.vy >= 0 || r.y <= r.ty) {
           explode(r.x, r.y);
           rockets.splice(i, 1);
         }
       }
 
-      // 2. Render Particles with realistic physical star trails & glows
+      // 2b. Render Particles with high performance vectors instead of laggy shadowBlur loops
       for (let i = particles.length - 1; i >= 0; i--) {
         const p = particles[i];
         p.vx *= p.resistance;
@@ -298,54 +299,41 @@ export default function ShubhFireworks() {
           continue;
         }
 
-        // Keep trail history
-        p.history.push({ x: p.x, y: p.y });
-        if (p.history.length > 8) p.history.shift();
-
         ctx.save();
         
-        // Twinkle/glimmer flickers
         let drawAlpha = p.alpha;
-        if (p.twinkle && Math.random() > 0.72) {
-          drawAlpha = Math.random() * 0.25;
+        if (p.twinkle && Math.random() > 0.75) {
+          drawAlpha = Math.random() * 0.25; // Shimmering/flickering glow
         }
         ctx.globalAlpha = drawAlpha;
 
-        // Render sleek line-based star trails (high quality look)
+        // Draw physical vector spark trail
         ctx.beginPath();
-        if (p.history.length > 1) {
-          ctx.moveTo(p.history[0].x, p.history[0].y);
-          for (let h = 1; h < p.history.length; h++) {
-            ctx.lineTo(p.history[h].x, p.history[h].y);
-          }
-        } else {
-          ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
-        }
-        
+        ctx.moveTo(p.x, p.y);
+        ctx.lineTo(p.x - p.vx * p.trailLength, p.y - p.vy * p.trailLength);
         ctx.strokeStyle = p.color;
         ctx.lineWidth = p.size;
         ctx.lineCap = 'round';
-        
-        // Dynamic radial glow (creates the dense light fields seen in user's image)
-        ctx.shadowColor = p.glowColor;
-        ctx.shadowBlur = p.size * 3.8;
         ctx.stroke();
 
-        // Core highlight point inside the firework spark
+        // Bright white hot-center node
         ctx.beginPath();
-        ctx.arc(p.x, p.y, p.size * 0.38, 0, Math.PI * 2);
+        ctx.arc(p.x, p.y, p.size * 0.4, 0, Math.PI * 2);
         ctx.fillStyle = '#FFFFFF';
         ctx.fill();
 
         ctx.restore();
       }
 
-      // 3. Render floating blessing texts
+      // 3. Switch back to normal blending for crisp text shadows
+      ctx.globalCompositeOperation = 'source-over';
+
+      // Render Floating auspicious blessings text
       for (let i = textBursts.length - 1; i >= 0; i--) {
         const t = textBursts[i];
-        t.y -= 0.5;
-        t.alpha -= 0.008;
-        t.scale += 0.0025;
+        t.y -= 0.55;
+        t.alpha -= 0.009;
+        t.scale += 0.003;
 
         if (t.alpha <= 0) {
           textBursts.splice(i, 1);
@@ -357,15 +345,17 @@ export default function ShubhFireworks() {
         ctx.translate(t.x, t.y);
         ctx.scale(t.scale, t.scale);
         
-        ctx.font = 'bold 23px "Space Grotesk", "Inter", sans-serif';
+        ctx.font = 'bold 22px "Space Grotesk", "Inter", sans-serif';
         ctx.fillStyle = t.color;
         ctx.textAlign = 'center';
-        ctx.shadowColor = '#000000';
-        ctx.shadowBlur = 10;
         
-        // Bright white outline
+        // Deep black backdrop shadow for crisp readability
+        ctx.shadowColor = '#000000';
+        ctx.shadowBlur = 8;
+        
+        // Pure white stroke outline
         ctx.strokeStyle = '#FFFFFF';
-        ctx.lineWidth = 1.8;
+        ctx.lineWidth = 2.0;
         ctx.strokeText(t.text, 0, 0);
         ctx.fillText(t.text, 0, 0);
         
@@ -377,21 +367,20 @@ export default function ShubhFireworks() {
 
     animationFrameId = requestAnimationFrame(render);
 
-    const startCelebrationSequence = () => {
-      // Rapid fire starting burst
+    const startCelebration = () => {
+      // Launch initial fireworks immediately
       launchRocket();
-      setTimeout(launchRocket, 200);
-      setTimeout(launchRocket, 450);
-      setTimeout(launchRocket, 700);
+      setTimeout(launchRocket, 150);
+      setTimeout(launchRocket, 400);
 
       let count = 0;
       activeIntervalRef.current = setInterval(() => {
         launchRocket();
-        if (Math.random() > 0.3) {
+        if (Math.random() > 0.35) {
           setTimeout(launchRocket, 180);
         }
         count++;
-        if (count > 20) {
+        if (count > 22) {
           if (activeIntervalRef.current) {
             clearInterval(activeIntervalRef.current);
           }
@@ -399,10 +388,10 @@ export default function ShubhFireworks() {
       }, 450);
     };
 
-    launchBurstRef.current = startCelebrationSequence;
+    startCelebrationRef.current = startCelebration;
 
     if (isPlaying) {
-      startCelebrationSequence();
+      startCelebration();
     }
 
     return () => {
@@ -414,7 +403,7 @@ export default function ShubhFireworks() {
     };
   }, [isPlaying]);
 
-  // Scroll listener at the end of the page
+  // Handle auto-scroll trigger when reaching the footer area
   useEffect(() => {
     const handleScroll = () => {
       const scrollPosition = window.innerHeight + window.scrollY;
@@ -424,10 +413,9 @@ export default function ShubhFireworks() {
         triggerDebounce.current = true;
         setIsPlaying(true);
 
-        // Keep celebrating for 12 seconds
+        // Run the burst sequence for 12 seconds, then allow retriggering
         setTimeout(() => {
           setIsPlaying(false);
-          // Wait to retrigger organically
           setTimeout(() => {
             triggerDebounce.current = false;
           }, 6000);
@@ -447,6 +435,7 @@ export default function ShubhFireworks() {
 
   const manualTrigger = () => {
     setIsPlaying(true);
+    // Auto-stop after 11.5 seconds
     setTimeout(() => {
       setIsPlaying(false);
     }, 11500);
@@ -457,22 +446,22 @@ export default function ShubhFireworks() {
       <AnimatePresence>
         {isPlaying && (
           <>
-            {/* Elegant high-contrast vignette backing sky overlay */}
+            {/* Deep twilight-night backing backdrop to contrast with golden bursts */}
             <motion.div
               initial={{ opacity: 0 }}
-              animate={{ opacity: 0.8 }}
+              animate={{ opacity: 0.78 }}
               exit={{ opacity: 0 }}
               transition={{ duration: 0.8 }}
-              className="fixed inset-0 bg-[#080108] pointer-events-none z-[8887] mix-blend-multiply"
+              className="fixed inset-0 bg-[#060006] pointer-events-none z-[100006] mix-blend-multiply"
             />
             
-            {/* Atmospheric starry universe layer */}
+            {/* Ambient stardust / sparkle fields */}
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 0.6 }}
               exit={{ opacity: 0 }}
               transition={{ duration: 0.8 }}
-              className="fixed inset-0 pointer-events-none z-[8887] bg-[radial-gradient(#ffffff_1px,transparent_1px)] [background-size:24px_24px] opacity-25"
+              className="fixed inset-0 pointer-events-none z-[100007] bg-[radial-gradient(#ffffff_1px,transparent_1px)] [background-size:24px_24px] opacity-20"
             />
           </>
         )}
@@ -480,25 +469,62 @@ export default function ShubhFireworks() {
 
       <canvas
         ref={canvasRef}
-        className={`fixed inset-0 pointer-events-none z-[8888] transition-opacity duration-700 ${isPlaying ? 'opacity-100' : 'opacity-0'}`}
+        className={`fixed inset-0 pointer-events-none z-[100008] transition-opacity duration-700 ${isPlaying ? 'opacity-100' : 'opacity-0'}`}
         style={{ mixBlendMode: 'screen' }}
       />
 
-      {/* Elegant Manual Interactive Celebration Trigger Button */}
-      <div className="fixed bottom-6 left-6 z-[8889] pointer-events-auto">
+      {/* Elegant Manual Interactive Celebration Trigger Button - COMPACT on mobile to prevent overlaps! */}
+      <div className="fixed bottom-6 left-6 z-[100010] pointer-events-auto flex flex-col items-start">
+        {/* Floating "Click Here" Hint Message Pop-up */}
+        <AnimatePresence>
+          {!isPlaying && (
+            <motion.div
+              initial={{ opacity: 0, y: 15, scale: 0.8 }}
+              animate={{ 
+                opacity: 1, 
+                y: [0, -6, 0],
+                scale: 1 
+              }}
+              exit={{ opacity: 0, scale: 0.8 }}
+              transition={{
+                y: {
+                  repeat: Infinity,
+                  duration: 1.8,
+                  ease: "easeInOut"
+                },
+                opacity: { duration: 0.4 },
+                scale: { duration: 0.3 }
+              }}
+              onClick={manualTrigger}
+              className="absolute bottom-16 left-0 mb-1 bg-gradient-to-r from-wedding-crimson to-wedding-maroon text-bright-gold text-[10px] md:text-xs font-bold px-3 py-1.5 rounded-xl shadow-[0_6px_20px_rgba(158,27,50,0.5)] border-2 border-royal-gold whitespace-nowrap z-[100012] flex items-center gap-1.5 cursor-pointer hover:scale-105 active:scale-95 transition-transform"
+            >
+              <span className="absolute top-1.5 right-1.5 flex h-2 w-2">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-saffron opacity-75"></span>
+                <span className="relative inline-flex rounded-full h-2 w-2 bg-bright-gold"></span>
+              </span>
+              <span className="animate-pulse">✨</span>
+              <span>यहाँ क्लिक करें / Click Here!</span>
+              <span className="text-xs">🎆</span>
+              {/* Cute speech bubble pointer */}
+              <div className="absolute -bottom-1.5 left-5 w-2.5 h-2.5 bg-wedding-maroon border-r-2 border-b-2 border-royal-gold rotate-45 transform" />
+            </motion.div>
+          )}
+        </AnimatePresence>
+
         <motion.button
           onClick={manualTrigger}
           whileHover={{ scale: 1.08, y: -2 }}
           whileTap={{ scale: 0.95 }}
-          className="bg-gradient-to-r from-saffron via-marigold-yellow to-saffron hover:from-wedding-maroon hover:to-wedding-crimson text-wedding-maroon hover:text-royal-gold font-extrabold px-5 py-3 rounded-full shadow-2xl flex items-center gap-2.5 border-2 border-royal-gold/70 text-xs tracking-wider uppercase transition-all duration-300"
+          className="bg-gradient-to-r from-saffron via-marigold-yellow to-saffron hover:from-wedding-maroon hover:to-wedding-crimson text-wedding-maroon hover:text-royal-gold font-extrabold w-12 h-12 md:w-auto md:h-auto md:px-5 md:py-3.5 rounded-full shadow-2xl flex items-center justify-center gap-2.5 border-2 border-royal-gold/70 text-xs tracking-wider uppercase transition-all duration-300 relative z-[100011]"
+          title="उत्सव मनाएं (Celebrate!)"
         >
           <span className="text-sm animate-pulse">🎆</span>
-          <span>उत्सव मनाएं (Celebrate!)</span>
-          <span className="text-sm animate-pulse">✨</span>
+          <span className="hidden md:inline">उत्सव मनाएं (Celebrate!)</span>
+          <span className="text-sm animate-pulse hidden md:inline">✨</span>
         </motion.button>
       </div>
 
-      {/* Custom Celebration Banner with Close/Dismiss control */}
+      {/* Premium Celebration Info Banner with Quick Dismiss option */}
       <AnimatePresence>
         {isPlaying && (
           <motion.div
@@ -506,19 +532,19 @@ export default function ShubhFireworks() {
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 40, scale: 0.9 }}
             transition={{ type: 'spring', stiffness: 220, damping: 20 }}
-            className="fixed bottom-6 right-6 w-[340px] md:w-96 bg-gradient-to-br from-wedding-maroon via-wedding-crimson to-wedding-maroon border-2 border-royal-gold p-4.5 rounded-2xl shadow-[0_15px_35px_rgba(139,28,45,0.45)] z-[9999] overflow-hidden"
+            className="fixed bottom-6 right-6 w-[340px] md:w-96 bg-gradient-to-br from-wedding-maroon via-wedding-crimson to-wedding-maroon border-2 border-royal-gold p-4.5 rounded-2xl shadow-[0_15px_35px_rgba(139,28,45,0.45)] z-[100015] overflow-hidden"
           >
-            {/* Pulsing light rings */}
+            {/* Outer golden halo */}
             <div className="absolute inset-0 bg-royal-gold/10 rounded-2xl animate-pulse pointer-events-none" />
 
-            {/* Traditional border frame decoration */}
+            {/* Traditional border decoration */}
             <div className="absolute top-1.5 bottom-1.5 left-1.5 right-1.5 border border-royal-gold/30 rounded-xl pointer-events-none" />
 
-            {/* Fast Close button */}
+            {/* Close Button "✕" */}
             <button
               onClick={stopCelebration}
               className="absolute top-3.5 right-3.5 w-7 h-7 bg-black/40 hover:bg-wedding-crimson text-royal-gold hover:text-white rounded-full flex items-center justify-center font-bold text-sm border border-royal-gold/30 cursor-pointer transition-all duration-200 shadow-md active:scale-90"
-              title="Close Fireworks (उत्सव बंद करें)"
+              title="Close Celebration (उत्सव बंद करें)"
               aria-label="Close"
             >
               ✕

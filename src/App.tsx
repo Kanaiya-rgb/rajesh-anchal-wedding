@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import PetalAnimation from './components/PetalAnimation';
 import GoldCursorTrail from './components/GoldCursorTrail';
-import WelcomeMotifAnimation from './components/WelcomeMotifAnimation';
 import ShubhFireworks from './components/ShubhFireworks';
 import GaneshaHeader from './components/GaneshaHeader';
 import Countdown from './components/Countdown';
@@ -39,19 +38,16 @@ export default function App() {
         setHasEntered(true);
       }} />
 
+      {/* 1.5. Golden Sparkle Cursor Trail visible on all pages starting from the welcome page */}
+      <GoldCursorTrail />
+
+      {/* 1.7. Shubh Fireworks Celebration at the bottom of the page (visible on main wedding page only, not on welcome page) */}
+      {hasEntered && <ShubhFireworks />}
+
       <div className={`relative min-h-screen bg-temple-cream text-wedding-maroon font-wedding-serif selection:bg-wedding-crimson selection:text-white pb-20 overflow-x-hidden transition-all duration-1000 ${!hasEntered ? 'h-screen overflow-hidden opacity-30 blur-[2px]' : 'opacity-100 blur-0'}`}>
         
         {/* 1. Live falling marigold petals animation */}
         <PetalAnimation />
-
-        {/* 1.5. Golden Sparkle Cursor Trail */}
-        <GoldCursorTrail />
-
-        {/* 1.6. Floating Auspicious Welcome Motifs background animation */}
-        <WelcomeMotifAnimation />
-
-        {/* 1.7. Shubh Fireworks Celebration at the bottom of the page */}
-        <ShubhFireworks />
 
         {/* Traditional Auspicious Floral Toran (Hanging marigold garland) at the very top */}
         <div className="w-full h-4 bg-gradient-to-r from-saffron via-marigold-yellow to-saffron relative z-30" />

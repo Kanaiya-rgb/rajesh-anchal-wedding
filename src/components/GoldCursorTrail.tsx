@@ -27,13 +27,15 @@ export default function GoldCursorTrail() {
     let animationFrameId: number;
     const sparks: Spark[] = [];
     
-    // Rich royal wedding gold shades
+    // Premium, deep royal golds and dark golden shades for maximum contrast and high visibility
     const colors = [
-      '#FFDF00', // Traditional Golden
+      '#AA7C11', // Rich Antique Gold
+      '#B8860B', // Dark Goldenrod
       '#D4AF37', // Royal Metallic Gold
-      '#FFD700', // Pure Gold
-      '#FFF9D0', // Shimmering Off-White Gold
-      '#FF9933', // Subtle Saffron Sparkle
+      '#C5A023', // Deep Gold
+      '#8B6508', // Dark Bronze Gold
+      '#E5A93B', // Warm Honey Gold
+      '#FFDF00', // Traditional Vibrant Yellow Gold
     ];
 
     let lastX = 0;
@@ -60,7 +62,7 @@ export default function GoldCursorTrail() {
           vy: Math.sin(angle) * speed + 0.4, // Slight gravity drift downward
           alpha: 1,
           decay: Math.random() * 0.015 + 0.018, // Lifespan of sparks
-          size: Math.random() * 2.2 + 0.8,
+          size: Math.random() * 2.8 + 1.2,
           color: colors[Math.floor(Math.random() * colors.length)],
           angle: Math.random() * Math.PI * 2,
           angularVelocity: (Math.random() - 0.5) * 0.06,
@@ -178,8 +180,7 @@ export default function GoldCursorTrail() {
   return (
     <canvas
       ref={canvasRef}
-      className="fixed inset-0 pointer-events-none z-[9999]"
-      style={{ mixBlendMode: 'screen' }}
+      className="fixed inset-0 pointer-events-none z-[100005]"
     />
   );
 }
