@@ -2,8 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { Sparkles, Heart, Flame, Volume2, ArrowRight } from 'lucide-react';
 
-import couple1Img from '@/assets/img/couple1.jpeg';
-import couple2Img from '@/assets/img/couple2.jpeg';
+import couple1Img from '@/public/assets/img/couple1.jpg';
+import couple2Img from '@/public/assets/img/couple2.jpg';
 
 interface WelcomeOverlayProps {
   onEnter: (selectedLang: 'en' | 'hi' | 'mix') => void;
