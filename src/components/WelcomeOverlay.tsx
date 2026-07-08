@@ -621,7 +621,7 @@ function CoupleIllustrationFallback({ type }: { type: 'normal' | 'garland' }) {
       </p>
       
       <p className="text-gray-400 font-mono text-[9px] max-w-[200px] mt-2 leading-normal leading-snug relative z-10">
-        [To use your real photos, upload <span className="text-bright-gold">couple1.jpeg</span> and <span className="text-bright-gold">couple2.jpeg</span> in the <span className="text-white font-bold">assets/img/</span> folder]
+        [To use your real photos, upload <span className="text-bright-gold">couple1.jpeg</span> and <span className="text-bright-gold">couple2.jpeg</span> in the <span className="text-white font-bold">public/assets/img/</span> folder]
       </p>
     </div>
   );
