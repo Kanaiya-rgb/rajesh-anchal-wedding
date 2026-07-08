@@ -20,6 +20,11 @@
   --color-temple-cream: #FCF8F2;
   --color-henna-green: #2E5A27;
 
+  --animate-pulse-ring: pulse-ring 3s infinite ease-in-out;
+  --animate-float: float 4s infinite ease-in-out;
+  --animate-slow-spin: slow-spin 25s linear infinite;
+  --animate-sparkle: sparkle 2.5s infinite ease-in-out;
+
   @keyframes pulse-ring {
     0% { transform: scale(0.95); opacity: 0.5; }
     50% { transform: scale(1.05); opacity: 0.8; }

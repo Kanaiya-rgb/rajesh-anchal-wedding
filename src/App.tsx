@@ -1,6 +1,9 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import PetalAnimation from './components/PetalAnimation';
+import GoldCursorTrail from './components/GoldCursorTrail';
+import WelcomeMotifAnimation from './components/WelcomeMotifAnimation';
+import ShubhFireworks from './components/ShubhFireworks';
 import GaneshaHeader from './components/GaneshaHeader';
 import Countdown from './components/Countdown';
 import WeddingCard from './components/WeddingCard';
@@ -40,6 +43,15 @@ export default function App() {
         
         {/* 1. Live falling marigold petals animation */}
         <PetalAnimation />
+
+        {/* 1.5. Golden Sparkle Cursor Trail */}
+        <GoldCursorTrail />
+
+        {/* 1.6. Floating Auspicious Welcome Motifs background animation */}
+        <WelcomeMotifAnimation />
+
+        {/* 1.7. Shubh Fireworks Celebration at the bottom of the page */}
+        <ShubhFireworks />
 
         {/* Traditional Auspicious Floral Toran (Hanging marigold garland) at the very top */}
         <div className="w-full h-4 bg-gradient-to-r from-saffron via-marigold-yellow to-saffron relative z-30" />

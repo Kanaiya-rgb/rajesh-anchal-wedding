@@ -109,7 +109,7 @@ export async function fetchBlessingsFromSheets(): Promise<BlessingMessage[]> {
 
       return table.rows;
     } catch (e) {
-      console.error(`Exception while fetching from ${url}:`, e);
+      console.warn(`Exception while fetching from ${url} (using offline fallback mode):`, e);
       return null;
     }
   }
@@ -135,8 +135,6 @@ export async function fetchBlessingsFromSheets(): Promise<BlessingMessage[]> {
   }
 
   const sheetBlessings = parseGoogleSheetRows(rows);
-  
-  // Reverse to show the latest blessings first
   return sheetBlessings.reverse();
 }
 
@@ -177,7 +175,7 @@ export async function submitRsvpToSheets(rsvp: RSVP): Promise<boolean> {
     saveRsvpLocally(rsvp);
     return true; // Return true as fetch successfully dispatched and no exception was thrown
   } catch (err) {
-    console.error("CORS or network error submitting RSVP, saved locally:", err);
+    console.warn("CORS or network error submitting RSVP, saved locally:", err);
     saveRsvpLocally(rsvp);
     return false;
   }
@@ -221,7 +219,7 @@ export async function submitBlessingToSheets(blessing: Omit<BlessingMessage, "id
     });
     return true; // Return true as fetch successfully dispatched and no exception was thrown
   } catch (err) {
-    console.error("CORS or network error submitting Blessing, saved locally:", err);
+    console.warn("CORS or network error submitting Blessing, saved locally:", err);
     return false;
   }
 }
@@ -238,7 +236,7 @@ function saveRsvpLocally(rsvp: RSVP) {
     });
     localStorage.setItem("local_rsvps", JSON.stringify(list));
   } catch (e) {
-    console.error("Failed to write RSVP to localStorage", e);
+    console.warn("Failed to write RSVP to localStorage", e);
   }
 }
 
@@ -252,7 +250,7 @@ function saveBlessingLocally(blessing: BlessingMessage) {
     });
     localStorage.setItem("local_blessings", JSON.stringify(list));
   } catch (e) {
-    console.error("Failed to write Blessing to localStorage", e);
+    console.warn("Failed to write Blessing to localStorage", e);
   }
 }
 
@@ -266,7 +264,7 @@ export function getLocalBlessings(): BlessingMessage[] {
       submittedAt: new Date(b.submittedAt)
     }));
   } catch (e) {
-    console.error("Failed to read Blessings from localStorage", e);
+    console.warn("Failed to read Blessings from localStorage", e);
     return [];
   }
 }

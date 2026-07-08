@@ -225,10 +225,10 @@ export default function EventTimeline({ lang = 'hi' }: EventTimelineProps) {
         <AnimatePresence mode="wait">
           <motion.div
             key={activeEvt.id}
-            initial={{ opacity: 0, y: 15 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -15 }}
-            transition={{ duration: 0.3 }}
+            initial={{ opacity: 0, scale: 0.96, y: 15 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            exit={{ opacity: 0, scale: 0.96, y: -15 }}
+            transition={{ type: "spring", stiffness: 220, damping: 20 }}
             className={`bg-gradient-to-br ${activeEvt.color} rounded-2xl p-5 md:p-8 border-2 shadow-2xl relative overflow-hidden`}
           >
             {/* Traditional Background Mandala watermark */}

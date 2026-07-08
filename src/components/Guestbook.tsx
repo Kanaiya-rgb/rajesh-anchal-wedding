@@ -293,16 +293,22 @@ export default function Guestbook({ lang = 'hi' }: GuestbookProps) {
               </div>
             ) : (
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 max-h-[420px] overflow-y-auto pr-2">
-                <AnimatePresence>
+                <AnimatePresence mode="popLayout">
                   {displayedMessages.map((msg, index) => {
                     const preset = stylePresets[msg.cardStyle] || stylePresets[0];
                     return (
                       <motion.div
-                        key={msg.id || index}
-                        initial={{ opacity: 0, scale: 0.9 }}
-                        animate={{ opacity: 1, scale: 1 }}
-                        exit={{ opacity: 0, scale: 0.9 }}
-                        transition={{ duration: 0.4 }}
+                        key={msg.id || `msg-${index}`}
+                        layout
+                        initial={{ opacity: 0, y: 30, scale: 0.92, rotate: index % 2 === 0 ? -1 : 1 }}
+                        animate={{ opacity: 1, y: 0, scale: 1, rotate: 0 }}
+                        exit={{ opacity: 0, scale: 0.92, y: -20 }}
+                        transition={{ 
+                          type: "spring",
+                          stiffness: 260,
+                          damping: 22,
+                          mass: 1
+                        }}
                         className={`p-4 rounded-2xl border-2 shadow-md relative overflow-hidden flex flex-col justify-between ${preset.bgClass}`}
                       >
                         {/* Decorative background heart */}

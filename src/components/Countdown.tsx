@@ -95,8 +95,14 @@ export default function Countdown({ targetDateStr = '2027-02-22T11:00:00', lang 
               key={item.label}
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
-              transition={{ delay: idx * 0.1, duration: 0.6 }}
-              className="relative bg-white/75 backdrop-blur-sm border border-royal-gold/30 rounded-xl py-2 px-1 md:p-4 flex flex-col items-center justify-center shadow-md overflow-hidden group hover:border-royal-gold/80 transition-all duration-300"
+              whileHover={{ y: -5, scale: 1.04, boxShadow: "0px 10px 20px rgba(139,28,45,0.08)" }}
+              transition={{ 
+                type: "spring",
+                stiffness: 300,
+                damping: 20,
+                default: { duration: 0.6 }
+              }}
+              className="relative bg-white/75 backdrop-blur-sm border border-royal-gold/30 rounded-xl py-2 px-1 md:p-4 flex flex-col items-center justify-center shadow-md overflow-hidden group hover:border-royal-gold/80 transition-all duration-300 cursor-default"
             >
               {/* Corner Traditional Accents */}
               <div className="absolute top-0 left-0 w-1.5 h-1.5 border-t border-l border-wedding-maroon" />
