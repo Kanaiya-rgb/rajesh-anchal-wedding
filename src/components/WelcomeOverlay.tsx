@@ -2,8 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { Sparkles, Heart, Flame, Volume2, ArrowRight } from 'lucide-react';
 
-const couple1Img = '/assets/img/couple1.jpeg';
-const couple2Img = '/assets/img/couple2.jpeg';
+import couple1Img from '@/assets/img/couple1.jpeg';
+import couple2Img from '@/assets/img/couple2.jpeg';
 
 interface WelcomeOverlayProps {
   onEnter: (selectedLang: 'en' | 'hi' | 'mix') => void;
@@ -609,33 +609,45 @@ export default function WelcomeOverlay({ onEnter }: WelcomeOverlayProps) {
 // PREMIUM 2D TRADITIONAL INDIAN COUPLE VECTOR ILLUSTRATION FALLBACK
 function CoupleIllustrationFallback({ type }: { type: 'normal' | 'garland' }) {
   return (
-    <div className="w-full h-full bg-gradient-to-b from-[#4d0c14] to-[#1f0206] flex flex-col items-center justify-center text-center p-4">
+    <div className="w-full h-full bg-gradient-to-b from-[#3d080f] to-[#1a0105] flex flex-col items-center justify-center text-center p-6 relative">
       {/* Radiant golden sunburst background */}
-      <div className="absolute w-44 h-44 rounded-full bg-bright-gold/10 filter blur-xl animate-pulse" />
+      <div className="absolute w-48 h-48 rounded-full bg-bright-gold/10 filter blur-2xl animate-pulse" />
 
-      <div className="flex justify-center items-center gap-3 sm:gap-6 mt-4 relative z-10">
-        <img
-          src="/assets/img/couple1.jpeg"
-          alt="Bride"
-          className="w-24 h-24 sm:w-32 sm:h-32 md:w-36 md:h-36 rounded-full object-cover border-4 border-yellow-500 shadow-lg"
-        />
+      {/* Traditional Mandap Arch Frame Decoration */}
+      <div className="absolute inset-4 border border-bright-gold/20 rounded-t-full pointer-events-none" />
+      <div className="absolute inset-5 border border-dashed border-bright-gold/10 rounded-t-full pointer-events-none" />
 
-        <img
-          src="/assets/img/couple2.jpeg"
-          alt="Groom"
-          className="w-24 h-24 sm:w-32 sm:h-32 md:w-36 md:h-36 rounded-full object-cover border-4 border-yellow-500 shadow-lg"
-        />
+      {/* Traditional Indian Wedding Motif (Ganesha / Kalash) */}
+      <div className="relative z-10 flex flex-col items-center gap-3">
+        {/* Sacred Kalash/Diya Mandala */}
+        <div className="w-20 h-20 rounded-full bg-gradient-to-b from-royal-gold to-bright-gold p-0.5 shadow-xl flex items-center justify-center animate-pulse">
+          <div className="w-full h-full rounded-full bg-wedding-maroon flex flex-col items-center justify-center p-2 border border-bright-gold/30">
+            {/* Elegant SVG Kalash/Diya */}
+            <svg className="w-10 h-10 text-bright-gold" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+              {/* Sacred fire flame */}
+              <path d="M12 2C12 2 9 6 9 8C9 9.65685 10.3431 11 12 11C13.6569 11 15 9.65685 15 8C15 6 12 2 12 2Z" fill="currentColor" />
+              {/* Sacred pot/kalash base */}
+              <path d="M6 14C6 11.5 8 11 12 11C16 11 18 11.5 18 14C18 17 16 21 12 21C8 21 6 17 6 14Z" stroke="currentColor" fill="rgba(212,175,55,0.1)" />
+              {/* Coconut leaves */}
+              <path d="M8 11C8 11 9.5 9 12 10C14.5 9 16 11 16 11" stroke="currentColor" />
+            </svg>
+          </div>
+        </div>
+
+        {/* Shubh Vivah text in beautiful Hindi font */}
+        <div className="mt-2">
+          <h3 className="text-royal-gold font-wedding-display text-lg tracking-wider font-semibold">शुभ विवाह</h3>
+          <p className="text-bright-gold/80 font-wedding-devanagari text-[11px] tracking-wide mt-1">राजेश संग आंचल</p>
+        </div>
+
+        <p className="text-royal-gold font-wedding-devanagari text-[10px] tracking-widest mt-2 px-4 py-1 bg-bright-gold/10 rounded-full border border-bright-gold/20">
+          {type === "garland" ? "वर-वधू स्वागत मुद्रा में" : "मंगलाचरण की पावन बेला"}
+        </p>
+
+        <p className="text-gray-400 font-mono text-[8px] max-w-[200px] mt-4 leading-normal leading-snug">
+          [To use your real photos, upload <span className="text-bright-gold">couple1.jpeg</span> and <span className="text-bright-gold">couple2.jpeg</span> in the <span className="text-white font-bold">assets/img/</span> folder]
+        </p>
       </div>
-
-      <p className="text-royal-gold font-wedding-devanagari text-[10px] tracking-widest mt-4 animate-pulse relative z-10">
-        {type === "garland"
-          ? "वर-वधू स्वागत मुद्रा में"
-          : "मंगलाचरण की पावन बेला"}
-      </p>
-      
-      <p className="text-gray-400 font-mono text-[9px] max-w-[200px] mt-2 leading-normal leading-snug relative z-10">
-        [To use your real photos, upload <span className="text-bright-gold">couple1.jpeg</span> and <span className="text-bright-gold">couple2.jpeg</span> in the <span className="text-white font-bold">public/assets/img/</span> folder]
-      </p>
     </div>
   );
 }
