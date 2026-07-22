@@ -211,13 +211,13 @@ export default function WeddingCard({ lang = 'mix' }: WeddingCardProps) {
               <div className="text-xs text-gray-500 font-wedding-serif leading-relaxed px-1">
                 {lang === 'mix' ? (
                   <span className="block space-y-1 text-center">
-                    <span className="block font-wedding-devanagari text-wedding-maroon font-bold text-xs leading-normal">एम.एससी (केमिस्ट्री)। श्री हनुमान सोनी एवं श्रीमती गीता सोनी के सुपुत्र।</span>
-                    <span className="block text-[10px] text-gray-400 font-medium leading-normal">M.Sc. Chemistry. Loving son of Mr. Hanuman &amp; Mrs. Geeta Soni.</span>
+                    <span className="block font-wedding-devanagari text-wedding-maroon font-bold text-xs leading-normal">श्री हनुमान सोनी एवं श्रीमती गीता सोनी के सुपुत्र।</span>
+                    <span className="block text-[10px] text-gray-400 font-medium leading-normal">Loving son of Mr. Hanuman &amp; Mrs. Geeta Soni.</span>
                   </span>
                 ) : lang === 'en' ? (
-                  <p>"M.Sc. Chemistry. Loving son of Mr. Hanuman & Mrs. Geeta Soni."</p>
+                  <p>"Loving son of Mr. Hanuman & Mrs. Geeta Soni."</p>
                 ) : (
-                  <p>"एम.एससी (केमिस्ट्री)। श्री हनुमान सोनी एवं श्रीमती गीता सोनी के सुपुत्र।"</p>
+                  <p>"श्री हनुमान सोनी एवं श्रीमती गीता सोनी के सुपुत्र।"</p>
                 )}
               </div>
             </div>
@@ -314,13 +314,13 @@ export default function WeddingCard({ lang = 'mix' }: WeddingCardProps) {
               <div className="text-xs text-gray-500 font-wedding-serif leading-relaxed px-1">
                 {lang === 'mix' ? (
                   <span className="block space-y-1 text-center">
-                    <span className="block font-wedding-devanagari text-wedding-maroon font-bold text-xs leading-normal">बी.एससी (ZCB)। सुशील एवं गुणवान सुपुत्री श्री मुन्ना सोनी एवं श्रीमती संगीता सोनी।</span>
-                    <span className="block text-[10px] text-gray-400 font-medium leading-normal">B.Sc. (ZCB). Talented and graceful daughter of Mr. Munna &amp; Mrs. Sangeeta Soni.</span>
+                    <span className="block font-wedding-devanagari text-wedding-maroon font-bold text-xs leading-normal">सुशील एवं गुणवान सुपुत्री श्री मुन्ना सोनी एवं श्रीमती संगीता सोनी।</span>
+                    <span className="block text-[10px] text-gray-400 font-medium leading-normal">Talented and graceful daughter of Mr. Munna &amp; Mrs. Sangeeta Soni.</span>
                   </span>
                 ) : lang === 'en' ? (
-                  <p>"B.Sc. (ZCB). Talented, graceful daughter of Mr. Munna & Mrs. Sangeeta Soni."</p>
+                  <p>"Talented, graceful daughter of Mr. Munna & Mrs. Sangeeta Soni."</p>
                 ) : (
-                  <p>"बी.एससी (ZCB)। सुशील एवं गुणवान सुपुत्री श्री मुन्ना सोनी एवं श्रीमती संगीता सोनी।"</p>
+                  <p>"सुशील एवं गुणवान सुपुत्री श्री मुन्ना सोनी एवं श्रीमती संगीता सोनी।"</p>
                 )}
               </div>
             </div>

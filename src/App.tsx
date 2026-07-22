@@ -142,16 +142,23 @@ export default function App() {
           </header>
 
           {/* 2. LORD GANESHA AUSPICIOUS SECTION */}
-          <section className="mb-12 bg-white/40 backdrop-blur-sm rounded-3xl border border-royal-gold/15 shadow-sm overflow-hidden">
+          <motion.section
+            initial={{ opacity: 0, y: 35 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: "-50px" }}
+            transition={{ duration: 0.8, ease: "easeOut" }}
+            className="mb-12 bg-white/40 backdrop-blur-sm rounded-3xl border border-royal-gold/15 shadow-sm overflow-hidden"
+          >
             <GaneshaHeader lang={lang} />
-          </section>
+          </motion.section>
 
           {/* INTERACTIVE SHUBH SHOWER BLOCKS PANEL */}
           <section className="mb-12 text-center px-2">
             <motion.div
-              initial={{ opacity: 0, y: 15 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
+              initial={{ opacity: 0, y: 35, scale: 0.96 }}
+              whileInView={{ opacity: 1, y: 0, scale: 1 }}
+              viewport={{ once: true, margin: "-50px" }}
+              transition={{ duration: 0.8, ease: "easeOut" }}
               className="bg-white border-2 border-royal-gold/40 rounded-3xl p-5 md:p-6 shadow-xl max-w-xl mx-auto relative overflow-hidden group hover:border-royal-gold transition-all duration-300"
             >
               <div className="absolute top-0 inset-x-0 h-1 bg-gradient-to-r from-saffron via-bright-gold to-saffron" />
@@ -210,34 +217,65 @@ export default function App() {
           </section>
 
           {/* 3. WEDDING INVITATION CARD DETAIL SECTION */}
-          <section className="mb-12">
+          <motion.section
+            initial={{ opacity: 0, y: 35 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: "-50px" }}
+            transition={{ duration: 0.8, ease: "easeOut" }}
+            className="mb-12"
+          >
             <WeddingCard lang={lang} />
-          </section>
+          </motion.section>
 
           {/* 4. AUSPICIOUS COUNTDOWN SECTION */}
-          <section className="mb-12 bg-gradient-to-br from-white/90 to-temple-cream/90 border-2 border-royal-gold/20 rounded-3xl p-5 md:p-6 shadow-xl relative overflow-hidden">
+          <motion.section
+            initial={{ opacity: 0, y: 35 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: "-50px" }}
+            transition={{ duration: 0.8, ease: "easeOut" }}
+            className="mb-12 bg-gradient-to-br from-white/90 to-temple-cream/90 border-2 border-royal-gold/20 rounded-3xl p-5 md:p-6 shadow-xl relative overflow-hidden"
+          >
             <div className="absolute top-0 left-0 w-8 h-8 border-t-2 border-l-2 border-royal-gold" />
             <div className="absolute top-0 right-0 w-8 h-8 border-t-2 border-r-2 border-royal-gold" />
             <div className="absolute bottom-0 left-0 w-8 h-8 border-b-2 border-l-2 border-royal-gold" />
             <div className="absolute bottom-0 right-0 w-8 h-8 border-b-2 border-r-2 border-royal-gold" />
             {/* The wedding date is February 22, 2027 */}
             <Countdown targetDateStr="2027-02-22T11:00:00+05:30" lang={lang} />
-          </section>
+          </motion.section>
 
           {/* 5. MULTI-DAY CEREMONY TIMELINE */}
-          <section className="mb-12 bg-white/45 backdrop-blur-sm rounded-3xl border border-royal-gold/15 p-4 md:p-6 shadow-md">
+          <motion.section
+            initial={{ opacity: 0, y: 35 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: "-50px" }}
+            transition={{ duration: 0.8, ease: "easeOut" }}
+            className="mb-12 bg-white/45 backdrop-blur-sm rounded-3xl border border-royal-gold/15 p-4 md:p-6 shadow-md"
+          >
             <EventTimeline lang={lang} />
-          </section>
+          </motion.section>
 
           {/* 6. PERSISTENT GUEST RSVP FORM */}
-          <section id="rsvp-section" className="mb-12">
+          <motion.section
+            id="rsvp-section"
+            initial={{ opacity: 0, y: 35 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: "-50px" }}
+            transition={{ duration: 0.8, ease: "easeOut" }}
+            className="mb-12"
+          >
             <RsvpForm lang={lang} />
-          </section>
+          </motion.section>
 
           {/* 7. DURABLE BLESSINGS GUESTBOOK WALL */}
-          <section className="mb-12 bg-white/40 backdrop-blur-sm rounded-3xl border border-royal-gold/15 p-4 md:p-6 shadow-md">
+          <motion.section
+            initial={{ opacity: 0, y: 35 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: "-50px" }}
+            transition={{ duration: 0.8, ease: "easeOut" }}
+            className="mb-12 bg-white/40 backdrop-blur-sm rounded-3xl border border-royal-gold/15 p-4 md:p-6 shadow-md"
+          >
             <Guestbook lang={lang} />
-          </section>
+          </motion.section>
 
           {/* FOOTER */}
           <footer className="text-center pt-8 border-t border-royal-gold/20 select-none pb-12 px-2">

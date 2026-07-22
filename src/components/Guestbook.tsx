@@ -103,8 +103,36 @@ export default function Guestbook({ lang = 'hi' }: GuestbookProps) {
     }
   };
 
+  const sectionVariants = {
+    hidden: { opacity: 0, y: 40 },
+    visible: {
+      opacity: 1,
+      y: 0,
+      transition: {
+        duration: 0.8,
+        ease: [0.16, 1, 0.3, 1],
+        staggerChildren: 0.15,
+      },
+    },
+  };
+
+  const itemVariants = {
+    hidden: { opacity: 0, y: 20 },
+    visible: {
+      opacity: 1,
+      y: 0,
+      transition: { duration: 0.6, ease: 'easeOut' },
+    },
+  };
+
   return (
-    <div className="py-8 px-2 max-w-5xl mx-auto relative overflow-hidden">
+    <motion.div
+      variants={sectionVariants}
+      initial="hidden"
+      whileInView="visible"
+      viewport={{ once: true, margin: "-60px" }}
+      className="py-8 px-2 max-w-5xl mx-auto relative overflow-hidden"
+    >
       {/* Traditional Swastika Background Watermark for Guestbook */}
       <div className="absolute left-1 sm:left-4 bottom-16 opacity-[0.08] sm:opacity-[0.06] text-wedding-maroon pointer-events-none w-14 h-14 sm:w-24 sm:h-24 md:w-28 md:h-28 z-0">
         <svg viewBox="0 0 100 100" className="w-full h-full" fill="none" stroke="currentColor" strokeWidth="3.5" strokeLinecap="round" strokeLinejoin="round">
@@ -134,7 +162,7 @@ export default function Guestbook({ lang = 'hi' }: GuestbookProps) {
         </svg>
       </div>
 
-      <div className="text-center mb-8">
+      <motion.div variants={itemVariants} className="text-center mb-8">
         <span className="text-saffron font-wedding-devanagari text-sm md:text-base tracking-widest block mb-1 font-bold">
           {lang === 'mix' ? '॥ मंगल आशीर्वाद (Guest Blessings) ॥' : lang === 'en' ? '॥ Guest Blessings ॥' : '॥ मंगल आशीर्वाद एवं शुभकामनाएं ॥'}
         </span>
@@ -158,11 +186,11 @@ export default function Guestbook({ lang = 'hi' }: GuestbookProps) {
           )}
         </p>
         <div className="w-24 h-1 bg-gradient-to-r from-transparent via-royal-gold to-transparent mx-auto mt-3" />
-      </div>
+      </motion.div>
 
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
         {/* Send Blessing Form */}
-        <div className="lg:col-span-5 bg-white rounded-3xl p-5 md:p-6 border-2 border-royal-gold/30 shadow-xl relative text-left">
+        <motion.div variants={itemVariants} className="lg:col-span-5 bg-white rounded-3xl p-5 md:p-6 border-2 border-royal-gold/30 shadow-xl relative text-left">
           <div className="absolute top-0 right-0 p-3 text-wedding-crimson opacity-15">
             <Gift className="w-12 h-12" />
           </div>
@@ -269,10 +297,10 @@ export default function Guestbook({ lang = 'hi' }: GuestbookProps) {
               ⚠️ {errorMsg}
             </motion.div>
           )}
-        </div>
+        </motion.div>
 
         {/* Live Blessings Wall Feed */}
-        <div className="lg:col-span-7">
+        <motion.div variants={itemVariants} className="lg:col-span-7">
           <div className="bg-temple-cream/50 rounded-3xl p-5 md:p-6 border border-royal-gold/20 min-h-[400px] text-left">
             <h3 className="text-base md:text-lg font-wedding-display font-bold text-wedding-maroon mb-4 flex items-center justify-between border-b border-royal-gold/10 pb-2">
               <span className="flex items-center gap-2">
@@ -342,8 +370,8 @@ export default function Guestbook({ lang = 'hi' }: GuestbookProps) {
               </div>
             )}
           </div>
-        </div>
+        </motion.div>
       </div>
-    </div>
+    </motion.div>
   );
 }

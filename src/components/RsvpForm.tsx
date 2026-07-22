@@ -238,14 +238,38 @@ export default function RsvpForm({ lang = 'hi' }: RsvpFormProps) {
     }
   };
 
+  const containerVariants = {
+    hidden: { opacity: 0, y: 45, scale: 0.95 },
+    visible: {
+      opacity: 1,
+      y: 0,
+      scale: 1,
+      transition: {
+        duration: 0.8,
+        ease: [0.16, 1, 0.3, 1],
+        staggerChildren: 0.1,
+        delayChildren: 0.15,
+      },
+    },
+  };
+
+  const itemVariants = {
+    hidden: { opacity: 0, y: 20 },
+    visible: {
+      opacity: 1,
+      y: 0,
+      transition: { duration: 0.5, ease: 'easeOut' },
+    },
+  };
+
   return (
     <div className="py-8 px-2 max-w-xl mx-auto relative z-10">
       {/* 1. Persistent Royal Card with "RSVP Now" Call to Action */}
       <motion.div
-        initial={{ opacity: 0, scale: 0.95 }}
-        whileInView={{ opacity: 1, scale: 1 }}
-        viewport={{ once: true }}
-        transition={{ duration: 0.8 }}
+        variants={containerVariants}
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ once: true, margin: "-60px" }}
         className="bg-white/90 backdrop-blur-md border-4 border-royal-gold rounded-3xl p-6 md:p-8 shadow-2xl relative overflow-hidden text-center group hover:border-saffron transition-colors duration-500"
       >
         {/* Decorative marigold flowers hanging design */}
@@ -266,19 +290,19 @@ export default function RsvpForm({ lang = 'hi' }: RsvpFormProps) {
           </svg>
         </div>
 
-        <span className="text-saffron font-wedding-devanagari text-base md:text-lg tracking-widest block mb-2 font-bold animate-pulse">
+        <motion.span variants={itemVariants} className="text-saffron font-wedding-devanagari text-base md:text-lg tracking-widest block mb-2 font-bold animate-pulse">
           {lang === 'mix' ? '॥ उपस्थिति सूचना / RSVP ॥' : lang === 'en' ? '॥ RSVP NOW ॥' : '॥ उपस्थिति सूचना ॥'}
-        </span>
+        </motion.span>
         
-        <h3 className="text-wedding-maroon font-wedding-display text-2xl md:text-3xl font-extrabold tracking-wide">
+        <motion.h3 variants={itemVariants} className="text-wedding-maroon font-wedding-display text-2xl md:text-3xl font-extrabold tracking-wide">
           {lang === 'mix' ? 'क्या आप पधार रहे हैं?' : lang === 'en' ? 'Are You Joining Us?' : 'क्या आप पधार रहे हैं?'}
-        </h3>
+        </motion.h3>
         
-        <p className="text-royal-gold font-wedding-script text-2xl mt-1.5 font-semibold">
+        <motion.p variants={itemVariants} className="text-royal-gold font-wedding-script text-2xl mt-1.5 font-semibold">
           {lang === 'mix' ? 'हम आपके आगमन की प्रतीक्षा कर रहे हैं' : lang === 'en' ? 'We request your auspicious presence' : 'हम आपके आगमन की प्रतीक्षा कर रहे हैं'}
-        </p>
+        </motion.p>
 
-        <div className="text-gray-500 font-wedding-serif text-xs md:text-sm mt-3.5 leading-relaxed px-4 max-w-md mx-auto space-y-1">
+        <motion.div variants={itemVariants} className="text-gray-500 font-wedding-serif text-xs md:text-sm mt-3.5 leading-relaxed px-4 max-w-md mx-auto space-y-1">
           {lang === 'mix' ? (
             <>
               <p className="font-wedding-devanagari font-bold text-wedding-maroon text-[13px]">
@@ -295,19 +319,15 @@ export default function RsvpForm({ lang = 'hi' }: RsvpFormProps) {
               हमारे पावन विवाह उत्सव में सम्मिलित होने के लिए और स्वागत सत्कार की समुचित व्यवस्था हेतु कृपया अपनी उपस्थिति दर्ज कराएं।
             </p>
           )}
-        </div>
+        </motion.div>
 
-        <div className="w-16 h-0.5 bg-royal-gold/50 mx-auto my-5" />
+        <motion.div variants={itemVariants} className="w-16 h-0.5 bg-royal-gold/50 mx-auto my-5" />
 
         {/* Elegant pulsing CTA Button to open Modal */}
         <motion.button
+          variants={itemVariants}
           whileHover={{ scale: 1.05, boxShadow: "0 10px 25px rgba(122,18,33,0.3)" }}
           whileTap={{ scale: 0.95 }}
-          animate={{ scale: [1, 1.04, 1] }}
-          transition={{ 
-            scale: { repeat: Infinity, duration: 2.2, ease: "easeInOut" },
-            default: { duration: 0.2 }
-          }}
           onClick={() => {
             setFieldErrors({});
             setError(null);
