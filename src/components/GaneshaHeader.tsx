@@ -22,19 +22,19 @@ export default function GaneshaHeader({ lang = 'hi' }: { lang: 'en' | 'hi' | 'mi
         transition={{ duration: 1.2, ease: "easeOut" }}
         className="relative z-10 flex flex-col items-center"
       >
-        <div className="relative p-3 rounded-t-full rounded-b-lg border-4 border-royal-gold bg-wedding-maroon shadow-2xl overflow-hidden max-w-[200px] md:max-w-[240px]">
+        <div className="relative p-3 rounded-t-full rounded-b-lg border-4 border-royal-gold bg-white shadow-xl overflow-hidden max-w-[200px] md:max-w-[240px]">
           {/* Glowing background aura */}
-          <div className="absolute inset-0 bg-radial-gradient from-bright-gold/30 via-transparent to-transparent opacity-80 animate-pulse-ring" />
+          <div className="absolute inset-0 bg-radial-gradient from-bright-gold/25 via-transparent to-transparent opacity-90 animate-pulse-ring" />
           
           <img 
             src="https://thekraftyresin.com/cdn/shop/files/ganeshji.webp?v=1739780216" 
             alt="Lord Ganesha Blessing" 
-            className="w-full h-auto object-contain rounded-t-full relative z-10 filter brightness-110 drop-shadow-[0_0_15px_rgba(255,223,0,0.4)]"
+            className="w-full h-auto object-contain rounded-t-full relative z-10 filter brightness-105 drop-shadow-[0_0_15px_rgba(212,175,55,0.4)]"
             referrerPolicy="no-referrer"
           />
           
           {/* Intricate decorative outline */}
-          <div className="absolute inset-1.5 border border-dashed border-bright-gold rounded-t-full rounded-b-md pointer-events-none opacity-60" />
+          <div className="absolute inset-1.5 border border-dashed border-royal-gold/60 rounded-t-full rounded-b-md pointer-events-none opacity-80" />
         </div>
 
         {/* Auspicious Chants / Mantras */}
